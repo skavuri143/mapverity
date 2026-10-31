@@ -1,0 +1,100 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mapverity"
+version = "0.1.0"
+description = "Field-level assurance for data pipelines: mapping-driven source-to-target validation, data mutation testing and explainable risk-adaptive test prioritization."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Srikanth Kavuri", email = "srikanthkavuri.research@gmail.com" }]
+keywords = ["etl testing", "data validation", "source-to-target mapping", "data quality", "mutation testing",
+            "test prioritization", "defect prediction", "aws glue", "documentdb", "cobol", "healthcare", "insurance"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Database",
+  "Topic :: Software Development :: Quality Assurance",
+  "Topic :: Software Development :: Testing",
+  "Framework :: Pytest",
+  "Typing :: Typed",
+]
+dependencies = ["pandas>=2.0", "numpy>=1.24", "pyyaml>=6.0", "typer>=0.12"]
+
+[project.optional-dependencies]
+aws = ["boto3>=1.26", "pymongo>=4.3"]
+sql = ["sqlalchemy>=2.0"]
+api = ["httpx>=0.25"]
+excel = ["openpyxl>=3.1"]
+parquet = ["pyarrow>=12"]
+ai = ["scikit-learn>=1.3", "xgboost>=2.0", "shap>=0.44", "imbalanced-learn>=0.12", "scipy>=1.10"]
+explain-lime = ["lime>=0.2.0.1"]
+all = ["mapverity[aws,sql,api,excel,parquet,ai]"]
+dev = [
+  "mapverity[all]", "pytest>=7", "pytest-cov>=4", "ruff>=0.5", "mypy>=1.8", "types-PyYAML", "pandas-stubs",
+  "moto[s3]>=5", "mongomock>=4.1", "matplotlib>=3.7", "build>=1.0",
+]
+docs = ["mkdocs>=1.5", "mkdocs-material>=9"]
+
+[project.urls]
+Homepage = "https://github.com/YOUR-GITHUB-USER/mapverity"
+Documentation = "https://YOUR-GITHUB-USER.github.io/mapverity"
+Issues = "https://github.com/YOUR-GITHUB-USER/mapverity/issues"
+Changelog = "https://github.com/YOUR-GITHUB-USER/mapverity/blob/main/CHANGELOG.md"
+
+[project.scripts]
+mapverity = "mapverity.cli:main"
+
+[project.entry-points.pytest11]
+mapverity = "mapverity.pytest_plugin"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+mapverity = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = ["slow: downloads data or trains models"]
+
+[tool.coverage.run]
+source = ["mapverity"]
+branch = true
+
+[tool.coverage.report]
+skip_covered = true
+show_missing = true
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "SIM"]
+ignore = ["S101", "S311", "UP007", "UP045", "B905", "SIM108", "E501", "UP006", "UP035", "UP037"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["typer.Argument", "typer.Option"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "B"]
+"experiments/*" = ["S"]
+"examples/*" = ["S"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+warn_unused_ignores = false
+check_untyped_defs = false

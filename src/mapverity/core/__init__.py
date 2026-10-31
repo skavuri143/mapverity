@@ -1,0 +1,1 @@
+"""MapVerity core package."""

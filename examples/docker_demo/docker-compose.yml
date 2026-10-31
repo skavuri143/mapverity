@@ -1,0 +1,38 @@
+# Local, end-to-end demo of the DocumentDB path with MongoDB standing in for Amazon DocumentDB:
+#   docker compose -f examples/docker_demo/docker-compose.yml up --build --abort-on-container-exit
+# 1. `pipeline` generates the synthetic EBCDIC member file, runs the reference transform and loads
+#    the member documents into MongoDB (as the Glue job would into DocumentDB).
+# 2. `mapverity` reads the source files and the live collection and validates them against the mapping.
+services:
+  mongo:
+    image: mongo:7
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 3s
+      retries: 20
+
+  pipeline:
+    build: {context: ../.., dockerfile: examples/docker_demo/Dockerfile.demo}
+    depends_on: {mongo: {condition: service_healthy}}
+    working_dir: /demo/examples/member_eligibility
+    entrypoint: ["sh", "-c"]
+    command:
+      - >
+        python generate_data.py --members 2000 &&
+        python transform.py &&
+        python ../docker_demo/load_mongo.py output/members.jsonl mongodb://mongo:27017 member_hub_test members_test
+    volumes: [demo:/demo/examples/member_eligibility/landing]
+
+  mapverity:
+    build: {context: ../.., dockerfile: examples/docker_demo/Dockerfile.demo}
+    depends_on: {pipeline: {condition: service_completed_successfully}}
+    working_dir: /demo/examples/member_eligibility
+    volumes: [demo:/demo/examples/member_eligibility/landing]
+    entrypoint: ["sh", "-c"]
+    command:
+      - >
+        mapverity from-mapping mapping/member_data_model_mapping.csv --datasets ../docker_demo/datasets.mongo.yaml -o live.mapverity.yaml &&
+        mapverity validate live.mapverity.yaml --mapping mapping/member_data_model_mapping.csv --gates ../docker_demo/gates.demo.yaml
+
+volumes:
+  demo: {}

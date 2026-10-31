@@ -1,0 +1,501 @@
+seed,defect,suite,detected,n_failing,first_killers
+101,D01_filter_includes_terminated,S1 structural,False,0,[]
+101,D01_filter_includes_terminated,S2 constraints,True,1,['model:members:status:domain']
+101,D01_filter_includes_terminated,S3 profiled,True,1,['allowed_values:members:status']
+101,D01_filter_includes_terminated,S4 mapping,True,2,"['model:members:status:domain', 'recon:members:keys']"
+101,D01_filter_includes_terminated,S5 mapping+profiled,True,3,"['model:members:status:domain', 'recon:members:keys', 'allowed_values:members:status']"
+101,D02_filter_drops_pending,S1 structural,False,0,[]
+101,D02_filter_drops_pending,S2 constraints,False,0,[]
+101,D02_filter_drops_pending,S3 profiled,False,0,[]
+101,D02_filter_drops_pending,S4 mapping,True,1,['recon:members:keys']
+101,D02_filter_drops_pending,S5 mapping+profiled,True,1,['recon:members:keys']
+101,D03_name_not_trimmed,S1 structural,False,0,[]
+101,D03_name_not_trimmed,S2 constraints,False,0,[]
+101,D03_name_not_trimmed,S3 profiled,True,1,['allowed_values:members:name.last']
+101,D03_name_not_trimmed,S4 mapping,True,2,"['map:members:name.last', 'map:members:name.full']"
+101,D03_name_not_trimmed,S5 mapping+profiled,True,3,"['map:members:name.last', 'map:members:name.full', 'allowed_values:members:name.last']"
+101,D04_name_case_not_normalised,S1 structural,False,0,[]
+101,D04_name_case_not_normalised,S2 constraints,False,0,[]
+101,D04_name_case_not_normalised,S3 profiled,True,1,['allowed_values:members:name.first']
+101,D04_name_case_not_normalised,S4 mapping,True,2,"['map:members:name.first', 'map:members:name.full']"
+101,D04_name_case_not_normalised,S5 mapping+profiled,True,3,"['map:members:name.first', 'map:members:name.full', 'allowed_values:members:name.first']"
+101,D05_dob_month_day_swapped,S1 structural,True,1,['model:members:birthDate:required']
+101,D05_dob_month_day_swapped,S2 constraints,True,1,['model:members:birthDate:required']
+101,D05_dob_month_day_swapped,S3 profiled,True,1,['not_null:members:birthDate']
+101,D05_dob_month_day_swapped,S4 mapping,True,2,"['model:members:birthDate:required', 'map:members:birthDate']"
+101,D05_dob_month_day_swapped,S5 mapping+profiled,True,3,"['model:members:birthDate:required', 'map:members:birthDate', 'not_null:members:birthDate']"
+101,D06_gender_unknown_mapped_null,S1 structural,True,1,['model:members:gender:required']
+101,D06_gender_unknown_mapped_null,S2 constraints,True,1,['model:members:gender:required']
+101,D06_gender_unknown_mapped_null,S3 profiled,True,1,['not_null:members:gender']
+101,D06_gender_unknown_mapped_null,S4 mapping,True,2,"['model:members:gender:required', 'map:members:gender']"
+101,D06_gender_unknown_mapped_null,S5 mapping+profiled,True,3,"['model:members:gender:required', 'map:members:gender', 'not_null:members:gender']"
+101,D07_comp3_scale_lost,S1 structural,False,0,[]
+101,D07_comp3_scale_lost,S2 constraints,False,0,[]
+101,D07_comp3_scale_lost,S3 profiled,True,2,"['mean_within:members:monthlyIncome', 'mean_within:members:fplPercent']"
+101,D07_comp3_scale_lost,S4 mapping,True,2,"['map:members:monthlyIncome', 'map:members:fplPercent']"
+101,D07_comp3_scale_lost,S5 mapping+profiled,True,4,"['map:members:monthlyIncome', 'map:members:fplPercent', 'mean_within:members:monthlyIncome']"
+101,D08_fpl_uses_annual_income_twice,S1 structural,False,0,[]
+101,D08_fpl_uses_annual_income_twice,S2 constraints,False,0,[]
+101,D08_fpl_uses_annual_income_twice,S3 profiled,True,1,['mean_within:members:fplPercent']
+101,D08_fpl_uses_annual_income_twice,S4 mapping,True,1,['map:members:fplPercent']
+101,D08_fpl_uses_annual_income_twice,S5 mapping+profiled,True,2,"['map:members:fplPercent', 'mean_within:members:fplPercent']"
+101,D09_fpl_hh_off_by_one,S1 structural,False,0,[]
+101,D09_fpl_hh_off_by_one,S2 constraints,False,0,[]
+101,D09_fpl_hh_off_by_one,S3 profiled,True,1,['mean_within:members:fplPercent']
+101,D09_fpl_hh_off_by_one,S4 mapping,True,1,['map:members:fplPercent']
+101,D09_fpl_hh_off_by_one,S5 mapping+profiled,True,2,"['map:members:fplPercent', 'mean_within:members:fplPercent']"
+101,D10_county_leading_zero_lost,S1 structural,False,0,[]
+101,D10_county_leading_zero_lost,S2 constraints,False,0,[]
+101,D10_county_leading_zero_lost,S3 profiled,True,1,['regex:members:countyCode']
+101,D10_county_leading_zero_lost,S4 mapping,True,1,['map:members:countyCode']
+101,D10_county_leading_zero_lost,S5 mapping+profiled,True,2,"['map:members:countyCode', 'regex:members:countyCode']"
+101,D11_phone_format_wrong,S1 structural,False,0,[]
+101,D11_phone_format_wrong,S2 constraints,False,0,[]
+101,D11_phone_format_wrong,S3 profiled,True,1,['regex:members:contact.phone']
+101,D11_phone_format_wrong,S4 mapping,True,1,['map:members:contact.phone']
+101,D11_phone_format_wrong,S5 mapping+profiled,True,2,"['map:members:contact.phone', 'regex:members:contact.phone']"
+101,D12_status_lookup_swapped,S1 structural,False,0,[]
+101,D12_status_lookup_swapped,S2 constraints,False,0,[]
+101,D12_status_lookup_swapped,S3 profiled,False,0,[]
+101,D12_status_lookup_swapped,S4 mapping,True,1,['map:members:status']
+101,D12_status_lookup_swapped,S5 mapping+profiled,True,1,['map:members:status']
+101,D13_segments_inner_join_drops_last,S1 structural,False,0,[]
+101,D13_segments_inner_join_drops_last,S2 constraints,False,0,[]
+101,D13_segments_inner_join_drops_last,S3 profiled,False,0,[]
+101,D13_segments_inner_join_drops_last,S4 mapping,True,2,"['map:members:eligibility._count', 'recon:members.eligibility:keys']"
+101,D13_segments_inner_join_drops_last,S5 mapping+profiled,True,2,"['map:members:eligibility._count', 'recon:members.eligibility:keys']"
+101,D14_segment_end_date_shifted,S1 structural,False,0,[]
+101,D14_segment_end_date_shifted,S2 constraints,False,0,[]
+101,D14_segment_end_date_shifted,S3 profiled,False,0,[]
+101,D14_segment_end_date_shifted,S4 mapping,True,1,['map:members.eligibility:endDate']
+101,D14_segment_end_date_shifted,S5 mapping+profiled,True,1,['map:members.eligibility:endDate']
+101,D15_open_end_date_defaulted,S1 structural,False,0,[]
+101,D15_open_end_date_defaulted,S2 constraints,False,0,[]
+101,D15_open_end_date_defaulted,S3 profiled,True,1,['in_range:members.eligibility:endDate']
+101,D15_open_end_date_defaulted,S4 mapping,True,1,['map:members.eligibility:endDate']
+101,D15_open_end_date_defaulted,S5 mapping+profiled,True,2,"['map:members.eligibility:endDate', 'in_range:members.eligibility:endDate']"
+101,D16_plan_code_untranslated,S1 structural,False,0,[]
+101,D16_plan_code_untranslated,S2 constraints,False,0,[]
+101,D16_plan_code_untranslated,S3 profiled,True,1,['allowed_values:members.eligibility:planCode']
+101,D16_plan_code_untranslated,S4 mapping,True,1,['map:members.eligibility:planCode']
+101,D16_plan_code_untranslated,S5 mapping+profiled,True,2,"['map:members.eligibility:planCode', 'allowed_values:members.eligibility:planCode']"
+101,D17_aid_category_not_uppercased,S1 structural,False,0,[]
+101,D17_aid_category_not_uppercased,S2 constraints,False,0,[]
+101,D17_aid_category_not_uppercased,S3 profiled,True,1,['allowed_values:members.eligibility:aidCategory']
+101,D17_aid_category_not_uppercased,S4 mapping,True,1,['map:members.eligibility:aidCategory']
+101,D17_aid_category_not_uppercased,S5 mapping+profiled,True,2,"['map:members.eligibility:aidCategory', 'allowed_values:members.eligibility:aidCategory']"
+101,D18_duplicate_documents,S1 structural,True,2,"['model:members:key-unique', 'model:members.eligibility:key-unique']"
+101,D18_duplicate_documents,S2 constraints,True,2,"['model:members:key-unique', 'model:members.eligibility:key-unique']"
+101,D18_duplicate_documents,S3 profiled,False,0,[]
+101,D18_duplicate_documents,S4 mapping,True,3,"['model:members:key-unique', 'map:members:_id', 'model:members.eligibility:key-unique']"
+101,D18_duplicate_documents,S5 mapping+profiled,True,3,"['model:members:key-unique', 'map:members:_id', 'model:members.eligibility:key-unique']"
+101,D19_source_system_wrong,S1 structural,False,0,[]
+101,D19_source_system_wrong,S2 constraints,True,1,['model:members:source.system:domain']
+101,D19_source_system_wrong,S3 profiled,True,1,['allowed_values:members:source.system']
+101,D19_source_system_wrong,S4 mapping,True,2,"['model:members:source.system:domain', 'map:members:source.system']"
+101,D19_source_system_wrong,S5 mapping+profiled,True,3,"['model:members:source.system:domain', 'map:members:source.system', 'allowed_values:members:source.system']"
+101,D20_household_size_from_wrong_field,S1 structural,False,0,[]
+101,D20_household_size_from_wrong_field,S2 constraints,False,0,[]
+101,D20_household_size_from_wrong_field,S3 profiled,True,2,"['allowed_values:members:householdSize', 'mean_within:members:fplPercent']"
+101,D20_household_size_from_wrong_field,S4 mapping,True,2,"['map:members:householdSize', 'map:members:fplPercent']"
+101,D20_household_size_from_wrong_field,S5 mapping+profiled,True,4,"['map:members:householdSize', 'map:members:fplPercent', 'allowed_values:members:householdSize']"
+102,D01_filter_includes_terminated,S1 structural,False,0,[]
+102,D01_filter_includes_terminated,S2 constraints,True,1,['model:members:status:domain']
+102,D01_filter_includes_terminated,S3 profiled,True,1,['allowed_values:members:status']
+102,D01_filter_includes_terminated,S4 mapping,True,2,"['model:members:status:domain', 'recon:members:keys']"
+102,D01_filter_includes_terminated,S5 mapping+profiled,True,3,"['model:members:status:domain', 'recon:members:keys', 'allowed_values:members:status']"
+102,D02_filter_drops_pending,S1 structural,False,0,[]
+102,D02_filter_drops_pending,S2 constraints,False,0,[]
+102,D02_filter_drops_pending,S3 profiled,False,0,[]
+102,D02_filter_drops_pending,S4 mapping,True,1,['recon:members:keys']
+102,D02_filter_drops_pending,S5 mapping+profiled,True,1,['recon:members:keys']
+102,D03_name_not_trimmed,S1 structural,False,0,[]
+102,D03_name_not_trimmed,S2 constraints,False,0,[]
+102,D03_name_not_trimmed,S3 profiled,True,1,['allowed_values:members:name.last']
+102,D03_name_not_trimmed,S4 mapping,True,2,"['map:members:name.last', 'map:members:name.full']"
+102,D03_name_not_trimmed,S5 mapping+profiled,True,3,"['map:members:name.last', 'map:members:name.full', 'allowed_values:members:name.last']"
+102,D04_name_case_not_normalised,S1 structural,False,0,[]
+102,D04_name_case_not_normalised,S2 constraints,False,0,[]
+102,D04_name_case_not_normalised,S3 profiled,True,1,['allowed_values:members:name.first']
+102,D04_name_case_not_normalised,S4 mapping,True,2,"['map:members:name.first', 'map:members:name.full']"
+102,D04_name_case_not_normalised,S5 mapping+profiled,True,3,"['map:members:name.first', 'map:members:name.full', 'allowed_values:members:name.first']"
+102,D05_dob_month_day_swapped,S1 structural,True,1,['model:members:birthDate:required']
+102,D05_dob_month_day_swapped,S2 constraints,True,1,['model:members:birthDate:required']
+102,D05_dob_month_day_swapped,S3 profiled,True,1,['not_null:members:birthDate']
+102,D05_dob_month_day_swapped,S4 mapping,True,2,"['model:members:birthDate:required', 'map:members:birthDate']"
+102,D05_dob_month_day_swapped,S5 mapping+profiled,True,3,"['model:members:birthDate:required', 'map:members:birthDate', 'not_null:members:birthDate']"
+102,D06_gender_unknown_mapped_null,S1 structural,True,1,['model:members:gender:required']
+102,D06_gender_unknown_mapped_null,S2 constraints,True,1,['model:members:gender:required']
+102,D06_gender_unknown_mapped_null,S3 profiled,True,1,['not_null:members:gender']
+102,D06_gender_unknown_mapped_null,S4 mapping,True,2,"['model:members:gender:required', 'map:members:gender']"
+102,D06_gender_unknown_mapped_null,S5 mapping+profiled,True,3,"['model:members:gender:required', 'map:members:gender', 'not_null:members:gender']"
+102,D07_comp3_scale_lost,S1 structural,False,0,[]
+102,D07_comp3_scale_lost,S2 constraints,False,0,[]
+102,D07_comp3_scale_lost,S3 profiled,True,3,"['in_range:members:monthlyIncome', 'mean_within:members:monthlyIncome', 'mean_within:members:fplPercent']"
+102,D07_comp3_scale_lost,S4 mapping,True,2,"['map:members:monthlyIncome', 'map:members:fplPercent']"
+102,D07_comp3_scale_lost,S5 mapping+profiled,True,5,"['map:members:monthlyIncome', 'map:members:fplPercent', 'in_range:members:monthlyIncome']"
+102,D08_fpl_uses_annual_income_twice,S1 structural,False,0,[]
+102,D08_fpl_uses_annual_income_twice,S2 constraints,False,0,[]
+102,D08_fpl_uses_annual_income_twice,S3 profiled,True,1,['mean_within:members:fplPercent']
+102,D08_fpl_uses_annual_income_twice,S4 mapping,True,1,['map:members:fplPercent']
+102,D08_fpl_uses_annual_income_twice,S5 mapping+profiled,True,2,"['map:members:fplPercent', 'mean_within:members:fplPercent']"
+102,D09_fpl_hh_off_by_one,S1 structural,False,0,[]
+102,D09_fpl_hh_off_by_one,S2 constraints,False,0,[]
+102,D09_fpl_hh_off_by_one,S3 profiled,True,1,['mean_within:members:fplPercent']
+102,D09_fpl_hh_off_by_one,S4 mapping,True,1,['map:members:fplPercent']
+102,D09_fpl_hh_off_by_one,S5 mapping+profiled,True,2,"['map:members:fplPercent', 'mean_within:members:fplPercent']"
+102,D10_county_leading_zero_lost,S1 structural,False,0,[]
+102,D10_county_leading_zero_lost,S2 constraints,False,0,[]
+102,D10_county_leading_zero_lost,S3 profiled,True,1,['regex:members:countyCode']
+102,D10_county_leading_zero_lost,S4 mapping,True,1,['map:members:countyCode']
+102,D10_county_leading_zero_lost,S5 mapping+profiled,True,2,"['map:members:countyCode', 'regex:members:countyCode']"
+102,D11_phone_format_wrong,S1 structural,False,0,[]
+102,D11_phone_format_wrong,S2 constraints,False,0,[]
+102,D11_phone_format_wrong,S3 profiled,True,1,['regex:members:contact.phone']
+102,D11_phone_format_wrong,S4 mapping,True,1,['map:members:contact.phone']
+102,D11_phone_format_wrong,S5 mapping+profiled,True,2,"['map:members:contact.phone', 'regex:members:contact.phone']"
+102,D12_status_lookup_swapped,S1 structural,False,0,[]
+102,D12_status_lookup_swapped,S2 constraints,False,0,[]
+102,D12_status_lookup_swapped,S3 profiled,False,0,[]
+102,D12_status_lookup_swapped,S4 mapping,True,1,['map:members:status']
+102,D12_status_lookup_swapped,S5 mapping+profiled,True,1,['map:members:status']
+102,D13_segments_inner_join_drops_last,S1 structural,False,0,[]
+102,D13_segments_inner_join_drops_last,S2 constraints,False,0,[]
+102,D13_segments_inner_join_drops_last,S3 profiled,False,0,[]
+102,D13_segments_inner_join_drops_last,S4 mapping,True,2,"['map:members:eligibility._count', 'recon:members.eligibility:keys']"
+102,D13_segments_inner_join_drops_last,S5 mapping+profiled,True,2,"['map:members:eligibility._count', 'recon:members.eligibility:keys']"
+102,D14_segment_end_date_shifted,S1 structural,False,0,[]
+102,D14_segment_end_date_shifted,S2 constraints,False,0,[]
+102,D14_segment_end_date_shifted,S3 profiled,False,0,[]
+102,D14_segment_end_date_shifted,S4 mapping,True,1,['map:members.eligibility:endDate']
+102,D14_segment_end_date_shifted,S5 mapping+profiled,True,1,['map:members.eligibility:endDate']
+102,D15_open_end_date_defaulted,S1 structural,False,0,[]
+102,D15_open_end_date_defaulted,S2 constraints,False,0,[]
+102,D15_open_end_date_defaulted,S3 profiled,True,1,['in_range:members.eligibility:endDate']
+102,D15_open_end_date_defaulted,S4 mapping,True,1,['map:members.eligibility:endDate']
+102,D15_open_end_date_defaulted,S5 mapping+profiled,True,2,"['map:members.eligibility:endDate', 'in_range:members.eligibility:endDate']"
+102,D16_plan_code_untranslated,S1 structural,False,0,[]
+102,D16_plan_code_untranslated,S2 constraints,False,0,[]
+102,D16_plan_code_untranslated,S3 profiled,True,1,['allowed_values:members.eligibility:planCode']
+102,D16_plan_code_untranslated,S4 mapping,True,1,['map:members.eligibility:planCode']
+102,D16_plan_code_untranslated,S5 mapping+profiled,True,2,"['map:members.eligibility:planCode', 'allowed_values:members.eligibility:planCode']"
+102,D17_aid_category_not_uppercased,S1 structural,False,0,[]
+102,D17_aid_category_not_uppercased,S2 constraints,False,0,[]
+102,D17_aid_category_not_uppercased,S3 profiled,True,1,['allowed_values:members.eligibility:aidCategory']
+102,D17_aid_category_not_uppercased,S4 mapping,True,1,['map:members.eligibility:aidCategory']
+102,D17_aid_category_not_uppercased,S5 mapping+profiled,True,2,"['map:members.eligibility:aidCategory', 'allowed_values:members.eligibility:aidCategory']"
+102,D18_duplicate_documents,S1 structural,True,2,"['model:members:key-unique', 'model:members.eligibility:key-unique']"
+102,D18_duplicate_documents,S2 constraints,True,2,"['model:members:key-unique', 'model:members.eligibility:key-unique']"
+102,D18_duplicate_documents,S3 profiled,False,0,[]
+102,D18_duplicate_documents,S4 mapping,True,3,"['model:members:key-unique', 'map:members:_id', 'model:members.eligibility:key-unique']"
+102,D18_duplicate_documents,S5 mapping+profiled,True,3,"['model:members:key-unique', 'map:members:_id', 'model:members.eligibility:key-unique']"
+102,D19_source_system_wrong,S1 structural,False,0,[]
+102,D19_source_system_wrong,S2 constraints,True,1,['model:members:source.system:domain']
+102,D19_source_system_wrong,S3 profiled,True,1,['allowed_values:members:source.system']
+102,D19_source_system_wrong,S4 mapping,True,2,"['model:members:source.system:domain', 'map:members:source.system']"
+102,D19_source_system_wrong,S5 mapping+profiled,True,3,"['model:members:source.system:domain', 'map:members:source.system', 'allowed_values:members:source.system']"
+102,D20_household_size_from_wrong_field,S1 structural,False,0,[]
+102,D20_household_size_from_wrong_field,S2 constraints,False,0,[]
+102,D20_household_size_from_wrong_field,S3 profiled,True,2,"['allowed_values:members:householdSize', 'mean_within:members:fplPercent']"
+102,D20_household_size_from_wrong_field,S4 mapping,True,2,"['map:members:householdSize', 'map:members:fplPercent']"
+102,D20_household_size_from_wrong_field,S5 mapping+profiled,True,4,"['map:members:householdSize', 'map:members:fplPercent', 'allowed_values:members:householdSize']"
+103,D01_filter_includes_terminated,S1 structural,False,0,[]
+103,D01_filter_includes_terminated,S2 constraints,True,1,['model:members:status:domain']
+103,D01_filter_includes_terminated,S3 profiled,True,1,['allowed_values:members:status']
+103,D01_filter_includes_terminated,S4 mapping,True,2,"['model:members:status:domain', 'recon:members:keys']"
+103,D01_filter_includes_terminated,S5 mapping+profiled,True,3,"['model:members:status:domain', 'recon:members:keys', 'allowed_values:members:status']"
+103,D02_filter_drops_pending,S1 structural,False,0,[]
+103,D02_filter_drops_pending,S2 constraints,False,0,[]
+103,D02_filter_drops_pending,S3 profiled,False,0,[]
+103,D02_filter_drops_pending,S4 mapping,True,1,['recon:members:keys']
+103,D02_filter_drops_pending,S5 mapping+profiled,True,1,['recon:members:keys']
+103,D03_name_not_trimmed,S1 structural,False,0,[]
+103,D03_name_not_trimmed,S2 constraints,False,0,[]
+103,D03_name_not_trimmed,S3 profiled,True,1,['allowed_values:members:name.last']
+103,D03_name_not_trimmed,S4 mapping,True,2,"['map:members:name.last', 'map:members:name.full']"
+103,D03_name_not_trimmed,S5 mapping+profiled,True,3,"['map:members:name.last', 'map:members:name.full', 'allowed_values:members:name.last']"
+103,D04_name_case_not_normalised,S1 structural,False,0,[]
+103,D04_name_case_not_normalised,S2 constraints,False,0,[]
+103,D04_name_case_not_normalised,S3 profiled,True,1,['allowed_values:members:name.first']
+103,D04_name_case_not_normalised,S4 mapping,True,2,"['map:members:name.first', 'map:members:name.full']"
+103,D04_name_case_not_normalised,S5 mapping+profiled,True,3,"['map:members:name.first', 'map:members:name.full', 'allowed_values:members:name.first']"
+103,D05_dob_month_day_swapped,S1 structural,True,1,['model:members:birthDate:required']
+103,D05_dob_month_day_swapped,S2 constraints,True,1,['model:members:birthDate:required']
+103,D05_dob_month_day_swapped,S3 profiled,True,1,['not_null:members:birthDate']
+103,D05_dob_month_day_swapped,S4 mapping,True,2,"['model:members:birthDate:required', 'map:members:birthDate']"
+103,D05_dob_month_day_swapped,S5 mapping+profiled,True,3,"['model:members:birthDate:required', 'map:members:birthDate', 'not_null:members:birthDate']"
+103,D06_gender_unknown_mapped_null,S1 structural,True,1,['model:members:gender:required']
+103,D06_gender_unknown_mapped_null,S2 constraints,True,1,['model:members:gender:required']
+103,D06_gender_unknown_mapped_null,S3 profiled,True,1,['not_null:members:gender']
+103,D06_gender_unknown_mapped_null,S4 mapping,True,2,"['model:members:gender:required', 'map:members:gender']"
+103,D06_gender_unknown_mapped_null,S5 mapping+profiled,True,3,"['model:members:gender:required', 'map:members:gender', 'not_null:members:gender']"
+103,D07_comp3_scale_lost,S1 structural,False,0,[]
+103,D07_comp3_scale_lost,S2 constraints,False,0,[]
+103,D07_comp3_scale_lost,S3 profiled,True,4,"['in_range:members:monthlyIncome', 'mean_within:members:monthlyIncome', 'in_range:members:fplPercent']"
+103,D07_comp3_scale_lost,S4 mapping,True,2,"['map:members:monthlyIncome', 'map:members:fplPercent']"
+103,D07_comp3_scale_lost,S5 mapping+profiled,True,6,"['map:members:monthlyIncome', 'map:members:fplPercent', 'in_range:members:monthlyIncome']"
+103,D08_fpl_uses_annual_income_twice,S1 structural,False,0,[]
+103,D08_fpl_uses_annual_income_twice,S2 constraints,False,0,[]
+103,D08_fpl_uses_annual_income_twice,S3 profiled,True,2,"['in_range:members:fplPercent', 'mean_within:members:fplPercent']"
+103,D08_fpl_uses_annual_income_twice,S4 mapping,True,1,['map:members:fplPercent']
+103,D08_fpl_uses_annual_income_twice,S5 mapping+profiled,True,3,"['map:members:fplPercent', 'in_range:members:fplPercent', 'mean_within:members:fplPercent']"
+103,D09_fpl_hh_off_by_one,S1 structural,False,0,[]
+103,D09_fpl_hh_off_by_one,S2 constraints,False,0,[]
+103,D09_fpl_hh_off_by_one,S3 profiled,True,1,['mean_within:members:fplPercent']
+103,D09_fpl_hh_off_by_one,S4 mapping,True,1,['map:members:fplPercent']
+103,D09_fpl_hh_off_by_one,S5 mapping+profiled,True,2,"['map:members:fplPercent', 'mean_within:members:fplPercent']"
+103,D10_county_leading_zero_lost,S1 structural,False,0,[]
+103,D10_county_leading_zero_lost,S2 constraints,False,0,[]
+103,D10_county_leading_zero_lost,S3 profiled,True,1,['regex:members:countyCode']
+103,D10_county_leading_zero_lost,S4 mapping,True,1,['map:members:countyCode']
+103,D10_county_leading_zero_lost,S5 mapping+profiled,True,2,"['map:members:countyCode', 'regex:members:countyCode']"
+103,D11_phone_format_wrong,S1 structural,False,0,[]
+103,D11_phone_format_wrong,S2 constraints,False,0,[]
+103,D11_phone_format_wrong,S3 profiled,True,1,['regex:members:contact.phone']
+103,D11_phone_format_wrong,S4 mapping,True,1,['map:members:contact.phone']
+103,D11_phone_format_wrong,S5 mapping+profiled,True,2,"['map:members:contact.phone', 'regex:members:contact.phone']"
+103,D12_status_lookup_swapped,S1 structural,False,0,[]
+103,D12_status_lookup_swapped,S2 constraints,False,0,[]
+103,D12_status_lookup_swapped,S3 profiled,False,0,[]
+103,D12_status_lookup_swapped,S4 mapping,True,1,['map:members:status']
+103,D12_status_lookup_swapped,S5 mapping+profiled,True,1,['map:members:status']
+103,D13_segments_inner_join_drops_last,S1 structural,False,0,[]
+103,D13_segments_inner_join_drops_last,S2 constraints,False,0,[]
+103,D13_segments_inner_join_drops_last,S3 profiled,False,0,[]
+103,D13_segments_inner_join_drops_last,S4 mapping,True,2,"['map:members:eligibility._count', 'recon:members.eligibility:keys']"
+103,D13_segments_inner_join_drops_last,S5 mapping+profiled,True,2,"['map:members:eligibility._count', 'recon:members.eligibility:keys']"
+103,D14_segment_end_date_shifted,S1 structural,False,0,[]
+103,D14_segment_end_date_shifted,S2 constraints,False,0,[]
+103,D14_segment_end_date_shifted,S3 profiled,False,0,[]
+103,D14_segment_end_date_shifted,S4 mapping,True,1,['map:members.eligibility:endDate']
+103,D14_segment_end_date_shifted,S5 mapping+profiled,True,1,['map:members.eligibility:endDate']
+103,D15_open_end_date_defaulted,S1 structural,False,0,[]
+103,D15_open_end_date_defaulted,S2 constraints,False,0,[]
+103,D15_open_end_date_defaulted,S3 profiled,True,1,['in_range:members.eligibility:endDate']
+103,D15_open_end_date_defaulted,S4 mapping,True,1,['map:members.eligibility:endDate']
+103,D15_open_end_date_defaulted,S5 mapping+profiled,True,2,"['map:members.eligibility:endDate', 'in_range:members.eligibility:endDate']"
+103,D16_plan_code_untranslated,S1 structural,False,0,[]
+103,D16_plan_code_untranslated,S2 constraints,False,0,[]
+103,D16_plan_code_untranslated,S3 profiled,True,1,['allowed_values:members.eligibility:planCode']
+103,D16_plan_code_untranslated,S4 mapping,True,1,['map:members.eligibility:planCode']
+103,D16_plan_code_untranslated,S5 mapping+profiled,True,2,"['map:members.eligibility:planCode', 'allowed_values:members.eligibility:planCode']"
+103,D17_aid_category_not_uppercased,S1 structural,False,0,[]
+103,D17_aid_category_not_uppercased,S2 constraints,False,0,[]
+103,D17_aid_category_not_uppercased,S3 profiled,True,1,['allowed_values:members.eligibility:aidCategory']
+103,D17_aid_category_not_uppercased,S4 mapping,True,1,['map:members.eligibility:aidCategory']
+103,D17_aid_category_not_uppercased,S5 mapping+profiled,True,2,"['map:members.eligibility:aidCategory', 'allowed_values:members.eligibility:aidCategory']"
+103,D18_duplicate_documents,S1 structural,True,2,"['model:members:key-unique', 'model:members.eligibility:key-unique']"
+103,D18_duplicate_documents,S2 constraints,True,2,"['model:members:key-unique', 'model:members.eligibility:key-unique']"
+103,D18_duplicate_documents,S3 profiled,False,0,[]
+103,D18_duplicate_documents,S4 mapping,True,3,"['model:members:key-unique', 'map:members:_id', 'model:members.eligibility:key-unique']"
+103,D18_duplicate_documents,S5 mapping+profiled,True,3,"['model:members:key-unique', 'map:members:_id', 'model:members.eligibility:key-unique']"
+103,D19_source_system_wrong,S1 structural,False,0,[]
+103,D19_source_system_wrong,S2 constraints,True,1,['model:members:source.system:domain']
+103,D19_source_system_wrong,S3 profiled,True,1,['allowed_values:members:source.system']
+103,D19_source_system_wrong,S4 mapping,True,2,"['model:members:source.system:domain', 'map:members:source.system']"
+103,D19_source_system_wrong,S5 mapping+profiled,True,3,"['model:members:source.system:domain', 'map:members:source.system', 'allowed_values:members:source.system']"
+103,D20_household_size_from_wrong_field,S1 structural,False,0,[]
+103,D20_household_size_from_wrong_field,S2 constraints,False,0,[]
+103,D20_household_size_from_wrong_field,S3 profiled,True,2,"['allowed_values:members:householdSize', 'mean_within:members:fplPercent']"
+103,D20_household_size_from_wrong_field,S4 mapping,True,2,"['map:members:householdSize', 'map:members:fplPercent']"
+103,D20_household_size_from_wrong_field,S5 mapping+profiled,True,4,"['map:members:householdSize', 'map:members:fplPercent', 'allowed_values:members:householdSize']"
+104,D01_filter_includes_terminated,S1 structural,False,0,[]
+104,D01_filter_includes_terminated,S2 constraints,True,1,['model:members:status:domain']
+104,D01_filter_includes_terminated,S3 profiled,True,1,['allowed_values:members:status']
+104,D01_filter_includes_terminated,S4 mapping,True,2,"['model:members:status:domain', 'recon:members:keys']"
+104,D01_filter_includes_terminated,S5 mapping+profiled,True,3,"['model:members:status:domain', 'recon:members:keys', 'allowed_values:members:status']"
+104,D02_filter_drops_pending,S1 structural,False,0,[]
+104,D02_filter_drops_pending,S2 constraints,False,0,[]
+104,D02_filter_drops_pending,S3 profiled,False,0,[]
+104,D02_filter_drops_pending,S4 mapping,True,1,['recon:members:keys']
+104,D02_filter_drops_pending,S5 mapping+profiled,True,1,['recon:members:keys']
+104,D03_name_not_trimmed,S1 structural,False,0,[]
+104,D03_name_not_trimmed,S2 constraints,False,0,[]
+104,D03_name_not_trimmed,S3 profiled,True,1,['allowed_values:members:name.last']
+104,D03_name_not_trimmed,S4 mapping,True,2,"['map:members:name.last', 'map:members:name.full']"
+104,D03_name_not_trimmed,S5 mapping+profiled,True,3,"['map:members:name.last', 'map:members:name.full', 'allowed_values:members:name.last']"
+104,D04_name_case_not_normalised,S1 structural,False,0,[]
+104,D04_name_case_not_normalised,S2 constraints,False,0,[]
+104,D04_name_case_not_normalised,S3 profiled,True,1,['allowed_values:members:name.first']
+104,D04_name_case_not_normalised,S4 mapping,True,2,"['map:members:name.first', 'map:members:name.full']"
+104,D04_name_case_not_normalised,S5 mapping+profiled,True,3,"['map:members:name.first', 'map:members:name.full', 'allowed_values:members:name.first']"
+104,D05_dob_month_day_swapped,S1 structural,True,1,['model:members:birthDate:required']
+104,D05_dob_month_day_swapped,S2 constraints,True,1,['model:members:birthDate:required']
+104,D05_dob_month_day_swapped,S3 profiled,True,1,['not_null:members:birthDate']
+104,D05_dob_month_day_swapped,S4 mapping,True,2,"['model:members:birthDate:required', 'map:members:birthDate']"
+104,D05_dob_month_day_swapped,S5 mapping+profiled,True,3,"['model:members:birthDate:required', 'map:members:birthDate', 'not_null:members:birthDate']"
+104,D06_gender_unknown_mapped_null,S1 structural,True,1,['model:members:gender:required']
+104,D06_gender_unknown_mapped_null,S2 constraints,True,1,['model:members:gender:required']
+104,D06_gender_unknown_mapped_null,S3 profiled,True,1,['not_null:members:gender']
+104,D06_gender_unknown_mapped_null,S4 mapping,True,2,"['model:members:gender:required', 'map:members:gender']"
+104,D06_gender_unknown_mapped_null,S5 mapping+profiled,True,3,"['model:members:gender:required', 'map:members:gender', 'not_null:members:gender']"
+104,D07_comp3_scale_lost,S1 structural,False,0,[]
+104,D07_comp3_scale_lost,S2 constraints,False,0,[]
+104,D07_comp3_scale_lost,S3 profiled,True,4,"['in_range:members:monthlyIncome', 'mean_within:members:monthlyIncome', 'in_range:members:fplPercent']"
+104,D07_comp3_scale_lost,S4 mapping,True,2,"['map:members:monthlyIncome', 'map:members:fplPercent']"
+104,D07_comp3_scale_lost,S5 mapping+profiled,True,6,"['map:members:monthlyIncome', 'map:members:fplPercent', 'in_range:members:monthlyIncome']"
+104,D08_fpl_uses_annual_income_twice,S1 structural,False,0,[]
+104,D08_fpl_uses_annual_income_twice,S2 constraints,False,0,[]
+104,D08_fpl_uses_annual_income_twice,S3 profiled,True,2,"['in_range:members:fplPercent', 'mean_within:members:fplPercent']"
+104,D08_fpl_uses_annual_income_twice,S4 mapping,True,1,['map:members:fplPercent']
+104,D08_fpl_uses_annual_income_twice,S5 mapping+profiled,True,3,"['map:members:fplPercent', 'in_range:members:fplPercent', 'mean_within:members:fplPercent']"
+104,D09_fpl_hh_off_by_one,S1 structural,False,0,[]
+104,D09_fpl_hh_off_by_one,S2 constraints,False,0,[]
+104,D09_fpl_hh_off_by_one,S3 profiled,True,1,['mean_within:members:fplPercent']
+104,D09_fpl_hh_off_by_one,S4 mapping,True,1,['map:members:fplPercent']
+104,D09_fpl_hh_off_by_one,S5 mapping+profiled,True,2,"['map:members:fplPercent', 'mean_within:members:fplPercent']"
+104,D10_county_leading_zero_lost,S1 structural,False,0,[]
+104,D10_county_leading_zero_lost,S2 constraints,False,0,[]
+104,D10_county_leading_zero_lost,S3 profiled,True,1,['regex:members:countyCode']
+104,D10_county_leading_zero_lost,S4 mapping,True,1,['map:members:countyCode']
+104,D10_county_leading_zero_lost,S5 mapping+profiled,True,2,"['map:members:countyCode', 'regex:members:countyCode']"
+104,D11_phone_format_wrong,S1 structural,False,0,[]
+104,D11_phone_format_wrong,S2 constraints,False,0,[]
+104,D11_phone_format_wrong,S3 profiled,True,1,['regex:members:contact.phone']
+104,D11_phone_format_wrong,S4 mapping,True,1,['map:members:contact.phone']
+104,D11_phone_format_wrong,S5 mapping+profiled,True,2,"['map:members:contact.phone', 'regex:members:contact.phone']"
+104,D12_status_lookup_swapped,S1 structural,False,0,[]
+104,D12_status_lookup_swapped,S2 constraints,False,0,[]
+104,D12_status_lookup_swapped,S3 profiled,False,0,[]
+104,D12_status_lookup_swapped,S4 mapping,True,1,['map:members:status']
+104,D12_status_lookup_swapped,S5 mapping+profiled,True,1,['map:members:status']
+104,D13_segments_inner_join_drops_last,S1 structural,False,0,[]
+104,D13_segments_inner_join_drops_last,S2 constraints,False,0,[]
+104,D13_segments_inner_join_drops_last,S3 profiled,False,0,[]
+104,D13_segments_inner_join_drops_last,S4 mapping,True,2,"['map:members:eligibility._count', 'recon:members.eligibility:keys']"
+104,D13_segments_inner_join_drops_last,S5 mapping+profiled,True,2,"['map:members:eligibility._count', 'recon:members.eligibility:keys']"
+104,D14_segment_end_date_shifted,S1 structural,False,0,[]
+104,D14_segment_end_date_shifted,S2 constraints,False,0,[]
+104,D14_segment_end_date_shifted,S3 profiled,False,0,[]
+104,D14_segment_end_date_shifted,S4 mapping,True,1,['map:members.eligibility:endDate']
+104,D14_segment_end_date_shifted,S5 mapping+profiled,True,1,['map:members.eligibility:endDate']
+104,D15_open_end_date_defaulted,S1 structural,False,0,[]
+104,D15_open_end_date_defaulted,S2 constraints,False,0,[]
+104,D15_open_end_date_defaulted,S3 profiled,True,1,['in_range:members.eligibility:endDate']
+104,D15_open_end_date_defaulted,S4 mapping,True,1,['map:members.eligibility:endDate']
+104,D15_open_end_date_defaulted,S5 mapping+profiled,True,2,"['map:members.eligibility:endDate', 'in_range:members.eligibility:endDate']"
+104,D16_plan_code_untranslated,S1 structural,False,0,[]
+104,D16_plan_code_untranslated,S2 constraints,False,0,[]
+104,D16_plan_code_untranslated,S3 profiled,True,1,['allowed_values:members.eligibility:planCode']
+104,D16_plan_code_untranslated,S4 mapping,True,1,['map:members.eligibility:planCode']
+104,D16_plan_code_untranslated,S5 mapping+profiled,True,2,"['map:members.eligibility:planCode', 'allowed_values:members.eligibility:planCode']"
+104,D17_aid_category_not_uppercased,S1 structural,False,0,[]
+104,D17_aid_category_not_uppercased,S2 constraints,False,0,[]
+104,D17_aid_category_not_uppercased,S3 profiled,True,1,['allowed_values:members.eligibility:aidCategory']
+104,D17_aid_category_not_uppercased,S4 mapping,True,1,['map:members.eligibility:aidCategory']
+104,D17_aid_category_not_uppercased,S5 mapping+profiled,True,2,"['map:members.eligibility:aidCategory', 'allowed_values:members.eligibility:aidCategory']"
+104,D18_duplicate_documents,S1 structural,True,2,"['model:members:key-unique', 'model:members.eligibility:key-unique']"
+104,D18_duplicate_documents,S2 constraints,True,2,"['model:members:key-unique', 'model:members.eligibility:key-unique']"
+104,D18_duplicate_documents,S3 profiled,False,0,[]
+104,D18_duplicate_documents,S4 mapping,True,3,"['model:members:key-unique', 'map:members:_id', 'model:members.eligibility:key-unique']"
+104,D18_duplicate_documents,S5 mapping+profiled,True,3,"['model:members:key-unique', 'map:members:_id', 'model:members.eligibility:key-unique']"
+104,D19_source_system_wrong,S1 structural,False,0,[]
+104,D19_source_system_wrong,S2 constraints,True,1,['model:members:source.system:domain']
+104,D19_source_system_wrong,S3 profiled,True,1,['allowed_values:members:source.system']
+104,D19_source_system_wrong,S4 mapping,True,2,"['model:members:source.system:domain', 'map:members:source.system']"
+104,D19_source_system_wrong,S5 mapping+profiled,True,3,"['model:members:source.system:domain', 'map:members:source.system', 'allowed_values:members:source.system']"
+104,D20_household_size_from_wrong_field,S1 structural,False,0,[]
+104,D20_household_size_from_wrong_field,S2 constraints,False,0,[]
+104,D20_household_size_from_wrong_field,S3 profiled,True,2,"['allowed_values:members:householdSize', 'mean_within:members:fplPercent']"
+104,D20_household_size_from_wrong_field,S4 mapping,True,2,"['map:members:householdSize', 'map:members:fplPercent']"
+104,D20_household_size_from_wrong_field,S5 mapping+profiled,True,4,"['map:members:householdSize', 'map:members:fplPercent', 'allowed_values:members:householdSize']"
+105,D01_filter_includes_terminated,S1 structural,False,0,[]
+105,D01_filter_includes_terminated,S2 constraints,True,1,['model:members:status:domain']
+105,D01_filter_includes_terminated,S3 profiled,True,1,['allowed_values:members:status']
+105,D01_filter_includes_terminated,S4 mapping,True,2,"['model:members:status:domain', 'recon:members:keys']"
+105,D01_filter_includes_terminated,S5 mapping+profiled,True,3,"['model:members:status:domain', 'recon:members:keys', 'allowed_values:members:status']"
+105,D02_filter_drops_pending,S1 structural,False,0,[]
+105,D02_filter_drops_pending,S2 constraints,False,0,[]
+105,D02_filter_drops_pending,S3 profiled,False,0,[]
+105,D02_filter_drops_pending,S4 mapping,True,1,['recon:members:keys']
+105,D02_filter_drops_pending,S5 mapping+profiled,True,1,['recon:members:keys']
+105,D03_name_not_trimmed,S1 structural,False,0,[]
+105,D03_name_not_trimmed,S2 constraints,False,0,[]
+105,D03_name_not_trimmed,S3 profiled,True,1,['allowed_values:members:name.last']
+105,D03_name_not_trimmed,S4 mapping,True,2,"['map:members:name.last', 'map:members:name.full']"
+105,D03_name_not_trimmed,S5 mapping+profiled,True,3,"['map:members:name.last', 'map:members:name.full', 'allowed_values:members:name.last']"
+105,D04_name_case_not_normalised,S1 structural,False,0,[]
+105,D04_name_case_not_normalised,S2 constraints,False,0,[]
+105,D04_name_case_not_normalised,S3 profiled,True,1,['allowed_values:members:name.first']
+105,D04_name_case_not_normalised,S4 mapping,True,2,"['map:members:name.first', 'map:members:name.full']"
+105,D04_name_case_not_normalised,S5 mapping+profiled,True,3,"['map:members:name.first', 'map:members:name.full', 'allowed_values:members:name.first']"
+105,D05_dob_month_day_swapped,S1 structural,True,1,['model:members:birthDate:required']
+105,D05_dob_month_day_swapped,S2 constraints,True,1,['model:members:birthDate:required']
+105,D05_dob_month_day_swapped,S3 profiled,True,1,['not_null:members:birthDate']
+105,D05_dob_month_day_swapped,S4 mapping,True,2,"['model:members:birthDate:required', 'map:members:birthDate']"
+105,D05_dob_month_day_swapped,S5 mapping+profiled,True,3,"['model:members:birthDate:required', 'map:members:birthDate', 'not_null:members:birthDate']"
+105,D06_gender_unknown_mapped_null,S1 structural,True,1,['model:members:gender:required']
+105,D06_gender_unknown_mapped_null,S2 constraints,True,1,['model:members:gender:required']
+105,D06_gender_unknown_mapped_null,S3 profiled,True,1,['not_null:members:gender']
+105,D06_gender_unknown_mapped_null,S4 mapping,True,2,"['model:members:gender:required', 'map:members:gender']"
+105,D06_gender_unknown_mapped_null,S5 mapping+profiled,True,3,"['model:members:gender:required', 'map:members:gender', 'not_null:members:gender']"
+105,D07_comp3_scale_lost,S1 structural,False,0,[]
+105,D07_comp3_scale_lost,S2 constraints,False,0,[]
+105,D07_comp3_scale_lost,S3 profiled,True,3,"['in_range:members:monthlyIncome', 'mean_within:members:monthlyIncome', 'mean_within:members:fplPercent']"
+105,D07_comp3_scale_lost,S4 mapping,True,2,"['map:members:monthlyIncome', 'map:members:fplPercent']"
+105,D07_comp3_scale_lost,S5 mapping+profiled,True,5,"['map:members:monthlyIncome', 'map:members:fplPercent', 'in_range:members:monthlyIncome']"
+105,D08_fpl_uses_annual_income_twice,S1 structural,False,0,[]
+105,D08_fpl_uses_annual_income_twice,S2 constraints,False,0,[]
+105,D08_fpl_uses_annual_income_twice,S3 profiled,True,1,['mean_within:members:fplPercent']
+105,D08_fpl_uses_annual_income_twice,S4 mapping,True,1,['map:members:fplPercent']
+105,D08_fpl_uses_annual_income_twice,S5 mapping+profiled,True,2,"['map:members:fplPercent', 'mean_within:members:fplPercent']"
+105,D09_fpl_hh_off_by_one,S1 structural,False,0,[]
+105,D09_fpl_hh_off_by_one,S2 constraints,False,0,[]
+105,D09_fpl_hh_off_by_one,S3 profiled,True,1,['mean_within:members:fplPercent']
+105,D09_fpl_hh_off_by_one,S4 mapping,True,1,['map:members:fplPercent']
+105,D09_fpl_hh_off_by_one,S5 mapping+profiled,True,2,"['map:members:fplPercent', 'mean_within:members:fplPercent']"
+105,D10_county_leading_zero_lost,S1 structural,False,0,[]
+105,D10_county_leading_zero_lost,S2 constraints,False,0,[]
+105,D10_county_leading_zero_lost,S3 profiled,True,1,['regex:members:countyCode']
+105,D10_county_leading_zero_lost,S4 mapping,True,1,['map:members:countyCode']
+105,D10_county_leading_zero_lost,S5 mapping+profiled,True,2,"['map:members:countyCode', 'regex:members:countyCode']"
+105,D11_phone_format_wrong,S1 structural,False,0,[]
+105,D11_phone_format_wrong,S2 constraints,False,0,[]
+105,D11_phone_format_wrong,S3 profiled,True,1,['regex:members:contact.phone']
+105,D11_phone_format_wrong,S4 mapping,True,1,['map:members:contact.phone']
+105,D11_phone_format_wrong,S5 mapping+profiled,True,2,"['map:members:contact.phone', 'regex:members:contact.phone']"
+105,D12_status_lookup_swapped,S1 structural,False,0,[]
+105,D12_status_lookup_swapped,S2 constraints,False,0,[]
+105,D12_status_lookup_swapped,S3 profiled,False,0,[]
+105,D12_status_lookup_swapped,S4 mapping,True,1,['map:members:status']
+105,D12_status_lookup_swapped,S5 mapping+profiled,True,1,['map:members:status']
+105,D13_segments_inner_join_drops_last,S1 structural,False,0,[]
+105,D13_segments_inner_join_drops_last,S2 constraints,False,0,[]
+105,D13_segments_inner_join_drops_last,S3 profiled,False,0,[]
+105,D13_segments_inner_join_drops_last,S4 mapping,True,2,"['map:members:eligibility._count', 'recon:members.eligibility:keys']"
+105,D13_segments_inner_join_drops_last,S5 mapping+profiled,True,2,"['map:members:eligibility._count', 'recon:members.eligibility:keys']"
+105,D14_segment_end_date_shifted,S1 structural,False,0,[]
+105,D14_segment_end_date_shifted,S2 constraints,False,0,[]
+105,D14_segment_end_date_shifted,S3 profiled,False,0,[]
+105,D14_segment_end_date_shifted,S4 mapping,True,1,['map:members.eligibility:endDate']
+105,D14_segment_end_date_shifted,S5 mapping+profiled,True,1,['map:members.eligibility:endDate']
+105,D15_open_end_date_defaulted,S1 structural,False,0,[]
+105,D15_open_end_date_defaulted,S2 constraints,False,0,[]
+105,D15_open_end_date_defaulted,S3 profiled,True,1,['in_range:members.eligibility:endDate']
+105,D15_open_end_date_defaulted,S4 mapping,True,1,['map:members.eligibility:endDate']
+105,D15_open_end_date_defaulted,S5 mapping+profiled,True,2,"['map:members.eligibility:endDate', 'in_range:members.eligibility:endDate']"
+105,D16_plan_code_untranslated,S1 structural,False,0,[]
+105,D16_plan_code_untranslated,S2 constraints,False,0,[]
+105,D16_plan_code_untranslated,S3 profiled,True,1,['allowed_values:members.eligibility:planCode']
+105,D16_plan_code_untranslated,S4 mapping,True,1,['map:members.eligibility:planCode']
+105,D16_plan_code_untranslated,S5 mapping+profiled,True,2,"['map:members.eligibility:planCode', 'allowed_values:members.eligibility:planCode']"
+105,D17_aid_category_not_uppercased,S1 structural,False,0,[]
+105,D17_aid_category_not_uppercased,S2 constraints,False,0,[]
+105,D17_aid_category_not_uppercased,S3 profiled,True,1,['allowed_values:members.eligibility:aidCategory']
+105,D17_aid_category_not_uppercased,S4 mapping,True,1,['map:members.eligibility:aidCategory']
+105,D17_aid_category_not_uppercased,S5 mapping+profiled,True,2,"['map:members.eligibility:aidCategory', 'allowed_values:members.eligibility:aidCategory']"
+105,D18_duplicate_documents,S1 structural,True,2,"['model:members:key-unique', 'model:members.eligibility:key-unique']"
+105,D18_duplicate_documents,S2 constraints,True,2,"['model:members:key-unique', 'model:members.eligibility:key-unique']"
+105,D18_duplicate_documents,S3 profiled,False,0,[]
+105,D18_duplicate_documents,S4 mapping,True,3,"['model:members:key-unique', 'map:members:_id', 'model:members.eligibility:key-unique']"
+105,D18_duplicate_documents,S5 mapping+profiled,True,3,"['model:members:key-unique', 'map:members:_id', 'model:members.eligibility:key-unique']"
+105,D19_source_system_wrong,S1 structural,False,0,[]
+105,D19_source_system_wrong,S2 constraints,True,1,['model:members:source.system:domain']
+105,D19_source_system_wrong,S3 profiled,True,1,['allowed_values:members:source.system']
+105,D19_source_system_wrong,S4 mapping,True,2,"['model:members:source.system:domain', 'map:members:source.system']"
+105,D19_source_system_wrong,S5 mapping+profiled,True,3,"['model:members:source.system:domain', 'map:members:source.system', 'allowed_values:members:source.system']"
+105,D20_household_size_from_wrong_field,S1 structural,False,0,[]
+105,D20_household_size_from_wrong_field,S2 constraints,False,0,[]
+105,D20_household_size_from_wrong_field,S3 profiled,True,2,"['allowed_values:members:householdSize', 'mean_within:members:fplPercent']"
+105,D20_household_size_from_wrong_field,S4 mapping,True,2,"['map:members:householdSize', 'map:members:fplPercent']"
+105,D20_household_size_from_wrong_field,S5 mapping+profiled,True,4,"['map:members:householdSize', 'map:members:fplPercent', 'allowed_values:members:householdSize']"

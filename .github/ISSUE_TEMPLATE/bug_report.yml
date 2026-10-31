@@ -1,0 +1,34 @@
+name: Bug report
+description: Something does not work as documented
+labels: [bug, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not paste real personal, member, patient, policyholder or financial data.** Reduce the problem to generated data.
+  - type: input
+    id: version
+    attributes: {label: MapVerity version, placeholder: "mapverity --version"}
+    validations: {required: true}
+  - type: input
+    id: env
+    attributes: {label: Python version and OS}
+    validations: {required: true}
+  - type: textarea
+    id: what
+    attributes: {label: What happened, description: "Include the command, spec snippet and full error output."}
+    validations: {required: true}
+  - type: textarea
+    id: expected
+    attributes: {label: What you expected}
+    validations: {required: true}
+  - type: textarea
+    id: repro
+    attributes: {label: Minimal reproduction (synthetic data only)}
+  - type: checkboxes
+    id: data
+    attributes:
+      label: Data confirmation
+      options:
+        - label: This report contains no real personal, health, policy or financial data.
+          required: true

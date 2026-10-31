@@ -1,0 +1,39 @@
+name: Adoption report
+description: Tell us how you use MapVerity (helps prioritize the roadmap)
+labels: [adoption]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. Share only what you are permitted to share; never include data, schemas or details your organization considers confidential. Describe pilots as pilots.
+  - type: input
+    id: org
+    attributes: {label: Organization or team (optional), description: "Leave blank to stay anonymous."}
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Stage
+      options: [Evaluating, Pilot, Pre-production, Production]
+    validations: {required: true}
+  - type: textarea
+    id: pipeline
+    attributes: {label: Pipeline shape, placeholder: "e.g. partner fixed-width files -> Spark -> Postgres"}
+  - type: checkboxes
+    id: features
+    attributes:
+      label: Features used
+      options:
+        - label: Mapping-sheet checks
+        - label: COBOL / fixed-width readers
+        - label: DocumentDB / MongoDB / SQL / REST readers
+        - label: Mutation testing
+        - label: Quality gates in CI
+        - label: Risk model / ERAD-QA prioritization
+  - type: textarea
+    id: effect
+    attributes: {label: Observed effect (optional), description: "What changed, and how you measured it."}
+  - type: dropdown
+    id: listing
+    attributes:
+      label: May we list your organization in ADOPTERS.md?
+      options: ["No", "Yes, with the details above", "Yes, but contact me first"]

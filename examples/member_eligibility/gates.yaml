@@ -1,0 +1,10 @@
+# Release policy for the member pipeline. Deterministic failures always block; predicted risk
+# is advisory unless risk_blocks is set to true.
+gates:
+  min_value_coverage: 0.9
+  coverage_action: BLOCK
+  min_mutation_score: 0.9
+  mutation_action: WARN
+  risk_warn_threshold: 0.7
+  risk_blocks: false
+  require_all_blocking_checks: true

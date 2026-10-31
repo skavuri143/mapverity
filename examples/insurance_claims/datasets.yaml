@@ -1,0 +1,17 @@
+name: insurance-claims-ingestion
+datasets:
+  claims_file:                     # expands to claims_file.HDR / .CLM / .LIN / .TRL
+    path: landing/
+    format: fixed_width
+    options:
+      layout: layouts/CLAIMS-FILE.layout.csv
+      multi_record: true
+      type_field: rec_type
+  policies:
+    path: reference/policies.csv
+    format: csv
+  claims:
+    path: output/claims.jsonl
+    format: documents
+    options:
+      key: claimId

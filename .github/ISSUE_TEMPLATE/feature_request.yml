@@ -1,0 +1,14 @@
+name: Feature request
+description: Propose a new rule, reader, check, operator or integration
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes: {label: The problem, description: "What pipeline pattern can't MapVerity handle today?"}
+    validations: {required: true}
+  - type: textarea
+    id: proposal
+    attributes: {label: Proposed solution}
+  - type: textarea
+    id: alternatives
+    attributes: {label: Alternatives you considered}

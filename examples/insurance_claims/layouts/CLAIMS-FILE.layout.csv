@@ -1,0 +1,25 @@
+name,start,length,type,implied_decimals,date_format,record_type,description
+rec_type,1,3,string,,,,"HDR, CLM, LIN or TRL"
+file_date,4,8,string,,,HDR,File creation date YYYYMMDD
+sender_id,12,10,string,,,HDR,Trading partner id
+claim_id,4,15,string,,,CLM,Claim number
+policy_no,19,12,string,,,CLM,Policy number
+claim_type,31,1,string,,,CLM,"P professional, I institutional, D dental"
+status_cd,32,2,string,,,CLM,"01 paid, 02 denied, 04 pended, 22 reversed"
+svc_from,34,8,string,,,CLM,Service from date YYYYMMDD
+svc_to,42,8,string,,,CLM,Service to date YYYYMMDD
+npi,50,10,string,,,CLM,Billing provider NPI
+dx1,60,7,string,,,CLM,"Principal diagnosis, ICD-10-CM without the dot"
+total_billed,67,12,number,2,,CLM,"Implied 2 decimals, trailing sign"
+total_allowed,79,12,number,2,,CLM,"Implied 2 decimals, trailing sign"
+total_paid,91,12,number,2,,CLM,"Implied 2 decimals, trailing sign"
+claim_id,4,15,string,,,LIN,Claim number
+line_no,19,3,integer,,,LIN,Line number
+proc_cd,22,5,string,,,LIN,CPT/HCPCS procedure code
+modifier,27,2,string,,,LIN,Procedure modifier (blank if none)
+pos,29,2,string,,,LIN,Place of service code
+units,31,4,integer,,,LIN,Service units
+line_billed,35,10,number,2,,LIN,"Implied 2 decimals, trailing sign"
+line_paid,45,10,number,2,,LIN,"Implied 2 decimals, trailing sign"
+claim_count,4,9,integer,,,TRL,Number of CLM records
+total_paid,13,15,number,2,,TRL,"Sum of CLM total_paid, implied 2 decimals, trailing sign"

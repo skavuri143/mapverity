@@ -1,0 +1,62 @@
+{
+  "claims": 800,
+  "service_lines": 2841,
+  "checks": 54,
+  "clean_run_passed": true,
+  "defects_detected": 10,
+  "defects_total": 10,
+  "detecting_checks": {
+    "C01_line_amount_scale_lost": [
+      "map:claims.lines:billedAmount"
+    ],
+    "C02_reversal_mapped_paid": [
+      "map:claims:status"
+    ],
+    "C03_icd_dot_misplaced": [
+      "model:claims:diagnosisCode:pattern",
+      "map:claims:diagnosisCode"
+    ],
+    "C04_zero_paid_lines_dropped": [
+      "map:claims:lines._count",
+      "recon:claims.lines:keys"
+    ],
+    "C05_reversal_sign_lost": [
+      "map:claims:billedAmount",
+      "map:claims:allowedAmount",
+      "map:claims:paidAmount",
+      "map:claims:patientResponsibility",
+      "map:claims.lines:billedAmount",
+      "map:claims.lines:paidAmount"
+    ],
+    "C06_service_dates_swapped": [
+      "map:claims:serviceFrom",
+      "map:claims:serviceTo"
+    ],
+    "C07_pos_leading_zero_lost": [
+      "model:claims.lines:placeOfService:pattern",
+      "map:claims.lines:placeOfService"
+    ],
+    "C08_reversals_not_loaded": [
+      "recon:claims:keys"
+    ],
+    "C09_patient_resp_uses_billed": [
+      "map:claims:patientResponsibility"
+    ],
+    "C10_policy_suffix_appended": [
+      "ref:claims:policyNumber",
+      "map:claims:policyNumber"
+    ]
+  },
+  "mutation": {
+    "claims": {
+      "mutants": 113,
+      "killed": 113,
+      "score": 1.0
+    },
+    "claims.lines": {
+      "mutants": 67,
+      "killed": 67,
+      "score": 1.0
+    }
+  }
+}
