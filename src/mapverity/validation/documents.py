@@ -30,7 +30,7 @@ def _scalar(v: Any) -> Any:
         if k == "$date":
             inner = inner.get("$numberLong", inner) if isinstance(inner, dict) else inner
             if isinstance(inner, (int, float)) or (isinstance(inner, str) and inner.lstrip("-").isdigit()):
-                return _dt.datetime.fromtimestamp(int(inner) / 1000, _dt.timezone.utc).isoformat()
+                return _dt.datetime.fromtimestamp(int(inner) / 1000, _dt.UTC).isoformat()
             return str(inner)
         if k in ("$numberDecimal", "$numberDouble"):
             return float(inner)

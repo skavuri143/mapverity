@@ -7,7 +7,7 @@ name = "mapverity"
 version = "0.1.0"
 description = "Field-level assurance for data pipelines: mapping-driven source-to-target validation, data mutation testing and explainable risk-adaptive test prioritization."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 authors = [{ name = "Srikanth Kavuri", email = "srikanthkavuri.research@gmail.com" }]
@@ -19,7 +19,6 @@ classifiers = [
   "Intended Audience :: Science/Research",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
@@ -79,7 +78,7 @@ show_missing = true
 
 [tool.ruff]
 line-length = 120
-target-version = "py310"
+target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "S", "SIM"]
@@ -94,7 +93,7 @@ extend-immutable-calls = ["typer.Argument", "typer.Option"]
 "examples/*" = ["S"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 ignore_missing_imports = true
 warn_unused_ignores = false
 check_untyped_defs = false

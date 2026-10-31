@@ -39,7 +39,7 @@ def render_html(
 ) -> str:
     s = result.summary()
     title = title or f"MapVerity report: {result.spec_name}"
-    now = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    now = _dt.datetime.now(_dt.UTC).strftime("%Y-%m-%d %H:%M UTC")
     out = [
         f"<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>"
         f"<title>{escape(title)}</title><style>{_CSS}</style></head><body><main>",

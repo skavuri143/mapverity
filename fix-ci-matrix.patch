@@ -1,0 +1,226 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 5b8eaf7..852a257 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -31,10 +31,7 @@ jobs:
+       fail-fast: false
+       matrix:
+         os: [ubuntu-latest, macos-latest, windows-latest]
+-        python-version: ["3.10", "3.11", "3.12", "3.13"]
+-        exclude:
+-          - {os: macos-latest, python-version: "3.10"}
+-          - {os: windows-latest, python-version: "3.10"}
++        python-version: ["3.11", "3.12", "3.13"]
+     runs-on: ${{ matrix.os }}
+     # Windows is supported on a best-effort basis until the first Windows CI run is green
+     continue-on-error: ${{ matrix.os == 'windows-latest' }}
+@@ -42,6 +39,9 @@ jobs:
+       - uses: actions/checkout@v4
+       - uses: actions/setup-python@v5
+         with: {python-version: "${{ matrix.python-version }}", cache: pip}
++      - name: OpenMP for XGBoost (macOS)
++        if: runner.os == 'macOS'
++        run: brew install libomp
+       - run: pip install -e ".[dev]"
+       - run: python -m coverage run -m pytest --junitxml=junit.xml
+       - run: python -m coverage report --fail-under=80
+diff --git a/.github/workflows/scorecard.yml b/.github/workflows/scorecard.yml
+index cb617d8..c3db9e9 100644
+--- a/.github/workflows/scorecard.yml
++++ b/.github/workflows/scorecard.yml
+@@ -17,7 +17,7 @@ jobs:
+     steps:
+       - uses: actions/checkout@v4
+         with: {persist-credentials: false}
+-      - uses: ossf/scorecard-action@v2.4.0
++      - uses: ossf/scorecard-action@v2.5.0
+         with:
+           results_file: results.sarif
+           results_format: sarif
+diff --git a/ci/aws/run_integration.py b/ci/aws/run_integration.py
+index db33dc6..440711b 100644
+--- a/ci/aws/run_integration.py
++++ b/ci/aws/run_integration.py
+@@ -15,6 +15,7 @@ Example:
+       --landing-bucket my-test-landing --docdb-secret-id ci/docdb/test \
+       --database member_hub_test --collection members_test --tls-ca-file global-bundle.pem
+ """
++
+ from __future__ import annotations
+ 
+ import argparse
+@@ -31,11 +32,11 @@ ROOT = Path(__file__).resolve().parents[2]
+ EXAMPLE = ROOT / "examples" / "member_eligibility"
+ sys.path.insert(0, str(EXAMPLE))
+ 
+-from mapverity import Spec, validate  # noqa: E402
+-from mapverity.validation.mapping import load_mapping, mapping_coverage, spec_from_mapping  # noqa: E402
++from mapverity import validate  # noqa: E402
+ from mapverity.core.engine import load_data  # noqa: E402
+-from mapverity.reporting.formats import to_junit, to_markdown  # noqa: E402
+ from mapverity.core.spec import DatasetSpec  # noqa: E402
++from mapverity.reporting.formats import to_junit, to_markdown  # noqa: E402
++from mapverity.validation.mapping import load_mapping, mapping_coverage, spec_from_mapping  # noqa: E402
+ 
+ TERMINAL = {"SUCCEEDED", "FAILED", "STOPPED", "TIMEOUT", "ERROR"}
+ 
+@@ -56,7 +57,9 @@ def upload_fixtures(bucket: str, prefix: str, members: int, seed: int, workdir:
+ 
+ def reset_collection(uri: str, database: str, collection: str, tls_ca_file: str) -> None:
+     if "test" not in collection.lower() or "test" not in database.lower():
+-        raise SystemExit(f"refusing to empty '{database}.{collection}': database and collection names must contain 'test'")
++        raise SystemExit(
++            f"refusing to empty '{database}.{collection}': database and collection names must contain 'test'"
++        )
+     from pymongo import MongoClient
+ 
+     client = MongoClient(uri, tls=True, tlsCAFile=tls_ca_file, retryWrites=False)
+@@ -97,7 +100,9 @@ def main() -> int:
+     p.add_argument("--seed", type=int, default=20261030)
+     p.add_argument("--reports", default="reports")
+     p.add_argument("--timeout", type=int, default=3600)
+-    p.add_argument("--skip-glue", action="store_true", help="validate the current collection without re-running the job")
++    p.add_argument(
++        "--skip-glue", action="store_true", help="validate the current collection without re-running the job"
++    )
+     a = p.parse_args()
+ 
+     run = os.environ.get("CODEBUILD_BUILD_NUMBER") or uuid.uuid4().hex[:8]
+@@ -105,8 +110,10 @@ def main() -> int:
+     reports = Path(a.reports)
+     reports.mkdir(parents=True, exist_ok=True)
+     secret = json.loads(boto3.client("secretsmanager").get_secret_value(SecretId=a.docdb_secret_id)["SecretString"])
+-    uri = (f"mongodb://{secret['username']}:{secret['password']}@{secret['host']}:{secret.get('port', 27017)}"
+-           "/?replicaSet=rs0&readPreference=secondaryPreferred")
++    uri = (
++        f"mongodb://{secret['username']}:{secret['password']}@{secret['host']}:{secret.get('port', 27017)}"
++        "/?replicaSet=rs0&readPreference=secondaryPreferred"
++    )
+ 
+     if not a.skip_glue:
+         upload_fixtures(a.landing_bucket, prefix, a.members, a.seed, Path("fixtures"))
+@@ -114,20 +121,35 @@ def main() -> int:
+         if not a.copybook_s3:
+             boto3.client("s3").upload_file(a.copybook, a.landing_bucket, f"{prefix}/MEMBER-REC.cpy")
+         reset_collection(uri, a.database, a.collection, a.tls_ca_file)
+-        run_glue(a.glue_job, {
+-            "--landing_path": f"s3://{a.landing_bucket}/{prefix}",
+-            "--copybook_path": copybook_s3,
+-            "--docdb_secret_id": a.docdb_secret_id,
+-            "--target_database": a.database,
+-            "--target_collection": a.collection,
+-        }, a.timeout)
++        run_glue(
++            a.glue_job,
++            {
++                "--landing_path": f"s3://{a.landing_bucket}/{prefix}",
++                "--copybook_path": copybook_s3,
++                "--docdb_secret_id": a.docdb_secret_id,
++                "--target_database": a.database,
++                "--target_collection": a.collection,
++            },
++            a.timeout,
++        )
+ 
+     datasets = {
+-        "member_master": DatasetSpec(path=f"s3://{a.landing_bucket}/{prefix}/MEMBER.MASTER.dat", format="cobol",
+-                                     options={"copybook": a.copybook, "encoding": "cp037"}),
++        "member_master": DatasetSpec(
++            path=f"s3://{a.landing_bucket}/{prefix}/MEMBER.MASTER.dat",
++            format="cobol",
++            options={"copybook": a.copybook, "encoding": "cp037"},
++        ),
+         "elig_segments": DatasetSpec(path=f"s3://{a.landing_bucket}/{prefix}/ELIG_SEGMENTS.txt", format="psv"),
+-        "members": DatasetSpec(path=uri, format="docdb", options={
+-            "database": a.database, "collection": a.collection, "key": "memberId", "tls_ca_file": a.tls_ca_file}),
++        "members": DatasetSpec(
++            path=uri,
++            format="docdb",
++            options={
++                "database": a.database,
++                "collection": a.collection,
++                "key": "memberId",
++                "tls_ca_file": a.tls_ca_file,
++            },
++        ),
+     }
+     mappings = load_mapping(a.mapping)
+     spec = spec_from_mapping(mappings, name="glue-member-integration", datasets=datasets)
+diff --git a/experiments/README.md b/experiments/README.md
+index e4170da..bce5f37 100644
+--- a/experiments/README.md
++++ b/experiments/README.md
+@@ -8,7 +8,7 @@ Results are committed so they can be checked without re-running; re-running repr
+ | `mapping_validation/` | Do mapping-derived checks catch realistic transformation defects, without false alarms, fast enough for CI? | `python experiments/mapping_validation/run_experiments.py` (~15 min) |
+ | `erad_qa/` | How accurate and stable is the explainable defect-risk model? Does ERAD-QA find defects earlier per unit of cost than standard orderings? | `python experiments/erad_qa/e5_defect_prediction.py` (~6 min), `python experiments/erad_qa/e6_prioritization.py` (~4 min) |
+ 
+-Environment: Python 3.10+, `pip install -e ".[dev]"`. The NASA MDP datasets are downloaded and
++Environment: Python 3.11+, `pip install -e ".[dev]"`. The NASA MDP datasets are downloaded and
+ checksum-verified on first use (set `MAPVERITY_CACHE` to choose the cache directory).
+ 
+ Reporting rules: confidence intervals with every mean, the exact statistical test with every
+diff --git a/pyproject.toml b/pyproject.toml
+index 4fee219..eb80b04 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -7,7 +7,7 @@ name = "mapverity"
+ version = "0.1.0"
+ description = "Field-level assurance for data pipelines: mapping-driven source-to-target validation, data mutation testing and explainable risk-adaptive test prioritization."
+ readme = "README.md"
+-requires-python = ">=3.10"
++requires-python = ">=3.11"
+ license = "Apache-2.0"
+ license-files = ["LICENSE", "NOTICE"]
+ authors = [{ name = "Srikanth Kavuri", email = "srikanthkavuri.research@gmail.com" }]
+@@ -19,7 +19,6 @@ classifiers = [
+   "Intended Audience :: Science/Research",
+   "Operating System :: OS Independent",
+   "Programming Language :: Python :: 3",
+-  "Programming Language :: Python :: 3.10",
+   "Programming Language :: Python :: 3.11",
+   "Programming Language :: Python :: 3.12",
+   "Programming Language :: Python :: 3.13",
+@@ -79,7 +78,7 @@ show_missing = true
+ 
+ [tool.ruff]
+ line-length = 120
+-target-version = "py310"
++target-version = "py311"
+ 
+ [tool.ruff.lint]
+ select = ["E", "F", "W", "I", "B", "UP", "S", "SIM"]
+@@ -94,7 +93,7 @@ extend-immutable-calls = ["typer.Argument", "typer.Option"]
+ "examples/*" = ["S"]
+ 
+ [tool.mypy]
+-python_version = "3.10"
++python_version = "3.11"
+ ignore_missing_imports = true
+ warn_unused_ignores = false
+ check_untyped_defs = false
+diff --git a/src/mapverity/reporting/html.py b/src/mapverity/reporting/html.py
+index 3d1722b..afd0561 100644
+--- a/src/mapverity/reporting/html.py
++++ b/src/mapverity/reporting/html.py
+@@ -39,7 +39,7 @@ def render_html(
+ ) -> str:
+     s = result.summary()
+     title = title or f"MapVerity report: {result.spec_name}"
+-    now = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
++    now = _dt.datetime.now(_dt.UTC).strftime("%Y-%m-%d %H:%M UTC")
+     out = [
+         f"<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>"
+         f"<title>{escape(title)}</title><style>{_CSS}</style></head><body><main>",
+diff --git a/src/mapverity/validation/documents.py b/src/mapverity/validation/documents.py
+index bd61791..5481de6 100644
+--- a/src/mapverity/validation/documents.py
++++ b/src/mapverity/validation/documents.py
+@@ -30,7 +30,7 @@ def _scalar(v: Any) -> Any:
+         if k == "$date":
+             inner = inner.get("$numberLong", inner) if isinstance(inner, dict) else inner
+             if isinstance(inner, (int, float)) or (isinstance(inner, str) and inner.lstrip("-").isdigit()):
+-                return _dt.datetime.fromtimestamp(int(inner) / 1000, _dt.timezone.utc).isoformat()
++                return _dt.datetime.fromtimestamp(int(inner) / 1000, _dt.UTC).isoformat()
+             return str(inner)
+         if k in ("$numberDecimal", "$numberDouble"):
+             return float(inner)
