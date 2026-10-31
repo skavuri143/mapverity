@@ -37,7 +37,7 @@ class Context:
                 return next(iter(self.data.values()))
             raise ValueError("check has no 'dataset' and more than one dataset is loaded")
         if name not in self.data:
-            raise KeyError(f"dataset '{name}' is not loaded (have: {sorted(self.data)})")
+            raise KeyError(f"dataset '{name}' not loaded (have: {sorted(self.data)})")
         return self.data[name]
 
 
@@ -460,10 +460,10 @@ def check_group_aggregate(ctx: Context, check: CheckSpec) -> CheckOutcome:
     eq = _values_equal(joined["__actual__"], joined["__expected__"], float(check.params.get("tolerance", 1e-6)), False)
     bad = ~eq
     n = int(bad.sum())
-    sample = joined.loc[bad, ["__key__", "__actual__", "__expected__"]].head(SAMPLE_SIZE)
-    sample = [
+    bad_rows = joined.loc[bad, ["__key__", "__actual__", "__expected__"]].head(SAMPLE_SIZE)
+    sample: List[dict[str, Any]] = [
         {"key": r[0], "actual": _sample([r[1]])[0], "expected": _sample([r[2]])[0]}
-        for r in sample.itertuples(index=False)
+        for r in bad_rows.itertuples(index=False)
     ]
     return CheckOutcome(
         failed=n,
