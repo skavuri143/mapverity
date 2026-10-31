@@ -20,7 +20,7 @@ jobs:
           V=$(python -c "import tomllib;print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
           test "v$V" = "${GITHUB_REF_NAME}" || (echo "tag ${GITHUB_REF_NAME} != version $V" && exit 1)
       - run: python -m build && twine check --strict dist/*
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with: {name: dist, path: dist/}
 
   pypi:

@@ -48,7 +48,7 @@ jobs:
       - if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
         run: python -m coverage xml
       - if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with: {name: coverage, path: coverage.xml}
 
   core-only:
@@ -92,7 +92,7 @@ jobs:
           python transform.py
           mapverity from-mapping mapping/claims_mapping.csv --datasets datasets.yaml -o claims.mapverity.yaml
           mapverity validate claims.mapverity.yaml --html report.html
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: example-reports
           path: |
