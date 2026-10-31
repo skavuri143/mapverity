@@ -1,0 +1,75 @@
+name: release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install build twine
+      - name: Tag matches package version
+        run: |
+          V=$(python -c "import tomllib;print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          test "v$V" = "${GITHUB_REF_NAME}" || (echo "tag ${GITHUB_REF_NAME} != version $V" && exit 1)
+      - run: python -m build && twine check --strict dist/*
+      - uses: actions/upload-artifact@v4
+        with: {name: dist, path: dist/}
+
+  pypi:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write   # PyPI trusted publishing: no API token stored in GitHub
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {name: dist, path: dist/}
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {name: dist, path: dist/}
+      - name: SBOM
+        uses: anchore/sbom-action@v0
+        with: {path: ., format: spdx-json, output-file: dist/mapverity-sbom.spdx.json}
+      - name: Create release with changelog section
+        env: {GH_TOKEN: "${{ github.token }}"}
+        run: |
+          V="${GITHUB_REF_NAME#v}"
+          awk "/^## \\[$V\\]/{f=1;next} /^## \\[/{f=0} f" CHANGELOG.md > notes.md
+          gh release create "$GITHUB_REF_NAME" dist/* --title "MapVerity $V" --notes-file notes.md
+
+  image:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/mapverity:${{ github.ref_name }}
+            ghcr.io/${{ github.repository_owner }}/mapverity:latest

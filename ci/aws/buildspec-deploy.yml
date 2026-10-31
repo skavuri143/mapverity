@@ -1,0 +1,16 @@
+# Stage 2: publish the Glue script and copybooks the TEST Glue job reads.
+# The Glue job itself is defined in pipeline.yaml and points at these S3 keys, so uploading
+# the new script is the deployment.
+version: 0.2
+
+env:
+  variables:
+    GLUE_SCRIPT_KEY: glue/member_to_docdb/glue_job.py
+    COPYBOOK_PREFIX: glue/member_to_docdb/copybooks/
+
+phases:
+  build:
+    commands:
+      - aws s3 cp examples/member_eligibility/glue_job.py "s3://${GLUE_ASSETS_BUCKET}/${GLUE_SCRIPT_KEY}"
+      - aws s3 sync examples/member_eligibility/copybooks "s3://${GLUE_ASSETS_BUCKET}/${COPYBOOK_PREFIX}" --delete
+      - echo "Deployed Glue script $(git rev-parse --short HEAD 2>/dev/null || echo "$CODEBUILD_RESOLVED_SOURCE_VERSION")"

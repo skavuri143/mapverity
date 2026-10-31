@@ -1,0 +1,23 @@
+target_table,target_field,source_dataset,source_field,rule,data_type,required,key,allowed_values,pattern,references,tolerance,description
+claims,claimId,claims_file.CLM,claim_id,trim,string,Y,Y,,C\d{14},,,Claim number
+claims,_id,claims_file.CLM,claim_id,trim,string,Y,,,,,,Document key
+claims,policyNumber,claims_file.CLM,policy_no,trim,string,Y,,,,policies.policy_no,,Must exist in the policy extract
+claims,claimType,claims_file.CLM,claim_type,"lookup: P=PROFESSIONAL, I=INSTITUTIONAL, D=DENTAL",string,Y,,PROFESSIONAL|INSTITUTIONAL|DENTAL,,,,
+claims,status,claims_file.CLM,status_cd,"lookup: 01=PAID, 02=DENIED, 04=PENDED, 22=REVERSED",string,Y,,PAID|DENIED|PENDED|REVERSED,,,,Reversals are loaded with negative amounts
+claims,serviceFrom,claims_file.CLM,svc_from,date: %Y%m%d,date,Y,,,,,,
+claims,serviceTo,claims_file.CLM,svc_to,date: %Y%m%d,date,Y,,,,,,
+claims,providerNpi,claims_file.CLM,npi,trim,string,Y,,,\d{10},,,
+claims,diagnosisCode,claims_file.CLM,dx1,"expr: where(length(strip(col(""dx1""))) > 3, concat(substr(strip(col(""dx1"")), 1, 3), substr(strip(col(""dx1"")), 4), sep="".""), strip(col(""dx1"")))",string,Y,,,"[A-Z]\d{2}(\.[0-9A-Z]{1,4})?",,,ICD-10-CM with the dot after the category
+claims,billedAmount,claims_file.CLM,total_billed,direct,number,Y,,,,,0.005,
+claims,allowedAmount,claims_file.CLM,total_allowed,direct,number,Y,,,,,0.005,
+claims,paidAmount,claims_file.CLM,total_paid,direct,number,Y,,,,,0.005,
+claims,patientResponsibility,claims_file.CLM,,"expr: round(num(col(""total_allowed"")) - num(col(""total_paid"")), 2)",number,Y,,,,,0.005,Allowed minus paid
+claims,lines._count,claims_file.LIN,claim_id,count,integer,Y,,,,,,One element per service line
+claims.lines,claimId,claims_file.LIN,claim_id,trim,string,Y,Y,,,,,Parent key
+claims.lines,lineNo,claims_file.LIN,line_no,direct,integer,Y,Y,,,,,
+claims.lines,procedureCode,claims_file.LIN,proc_cd,upper_trim,string,Y,,,[0-9A-Z]{5},,,CPT/HCPCS/CDT
+claims.lines,modifier,claims_file.LIN,modifier,trim,string,N,,,,,,Null when blank
+claims.lines,placeOfService,claims_file.LIN,pos,"expr: lpad(strip(col(""pos"")), 2, ""0"")",string,Y,,,\d{2},,,Two-digit CMS place of service
+claims.lines,units,claims_file.LIN,units,direct,integer,Y,,,,,,
+claims.lines,billedAmount,claims_file.LIN,line_billed,direct,number,Y,,,,,0.005,
+claims.lines,paidAmount,claims_file.LIN,line_paid,direct,number,Y,,,,,0.005,

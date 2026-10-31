@@ -1,0 +1,402 @@
+{
+  "meta": {
+    "mapverity": "0.1.0",
+    "python": "3.13.18",
+    "pandas": "3.0.5",
+    "machine": "x86_64",
+    "processor_count": 2,
+    "members_per_run": 2000,
+    "defect_seeds": [
+      101,
+      102,
+      103,
+      104,
+      105
+    ],
+    "mutation_seeds": [
+      1,
+      2,
+      3
+    ],
+    "fp_seeds": [
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216,
+      217,
+      218,
+      219,
+      220
+    ],
+    "training_seed": 7,
+    "wall_clock_s": 733.5
+  },
+  "suites": {
+    "S1 structural": 25,
+    "S2 constraints": 28,
+    "S3 profiled": 57,
+    "S4 mapping": 49,
+    "S5 mapping+profiled": 106
+  },
+  "coverage": {
+    "fields_in_mapping": 23,
+    "value_validated": 22,
+    "constraint_only": [
+      "members.source.loadTimestamp"
+    ],
+    "not_validated": [],
+    "value_coverage": 0.9565,
+    "unmapped_in_data": [],
+    "missing_in_data": []
+  },
+  "e1_defects_detected": {
+    "S1 structural": 3,
+    "S2 constraints": 5,
+    "S3 profiled": 15,
+    "S4 mapping": 20,
+    "S5 mapping+profiled": 20
+  },
+  "e1_defects_partially_detected": {
+    "S1 structural": 0,
+    "S2 constraints": 0,
+    "S3 profiled": 0,
+    "S4 mapping": 0,
+    "S5 mapping+profiled": 0
+  },
+  "e1_detection_rate": {
+    "S1 structural": 0.15,
+    "S2 constraints": 0.25,
+    "S3 profiled": 0.75,
+    "S4 mapping": 1.0,
+    "S5 mapping+profiled": 1.0
+  },
+  "e1_per_defect": {
+    "D01_filter_includes_terminated": {
+      "S1 structural": 0.0,
+      "S2 constraints": 1.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D02_filter_drops_pending": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 0.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D03_name_not_trimmed": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D04_name_case_not_normalised": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D05_dob_month_day_swapped": {
+      "S1 structural": 1.0,
+      "S2 constraints": 1.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D06_gender_unknown_mapped_null": {
+      "S1 structural": 1.0,
+      "S2 constraints": 1.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D07_comp3_scale_lost": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D08_fpl_uses_annual_income_twice": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D09_fpl_hh_off_by_one": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D10_county_leading_zero_lost": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D11_phone_format_wrong": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D12_status_lookup_swapped": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 0.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D13_segments_inner_join_drops_last": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 0.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D14_segment_end_date_shifted": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 0.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D15_open_end_date_defaulted": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D16_plan_code_untranslated": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D17_aid_category_not_uppercased": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D18_duplicate_documents": {
+      "S1 structural": 1.0,
+      "S2 constraints": 1.0,
+      "S3 profiled": 0.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D19_source_system_wrong": {
+      "S1 structural": 0.0,
+      "S2 constraints": 1.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "D20_household_size_from_wrong_field": {
+      "S1 structural": 0.0,
+      "S2 constraints": 0.0,
+      "S3 profiled": 1.0,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    }
+  },
+  "e2_mutation_score": {
+    "S1 structural@0.01": {
+      "mean": 0.309,
+      "sd": 0.0167
+    },
+    "S1 structural@0.05": {
+      "mean": 0.3281,
+      "sd": 0.0138
+    },
+    "S2 constraints@0.01": {
+      "mean": 0.4184,
+      "sd": 0.0131
+    },
+    "S2 constraints@0.05": {
+      "mean": 0.4288,
+      "sd": 0.008
+    },
+    "S3 profiled@0.01": {
+      "mean": 0.7951,
+      "sd": 0.003
+    },
+    "S3 profiled@0.05": {
+      "mean": 0.8038,
+      "sd": 0.0108
+    },
+    "S4 mapping@0.01": {
+      "mean": 0.9896,
+      "sd": 0.0
+    },
+    "S4 mapping@0.05": {
+      "mean": 0.9896,
+      "sd": 0.0
+    },
+    "S5 mapping+profiled@0.01": {
+      "mean": 1.0,
+      "sd": 0.0
+    },
+    "S5 mapping+profiled@0.05": {
+      "mean": 1.0,
+      "sd": 0.0
+    }
+  },
+  "e2_mutants_per_run": 192,
+  "e2_by_fault_class_rate_0.05": {
+    "accuracy": {
+      "S1 structural": 0.2586,
+      "S2 constraints": 0.2989,
+      "S3 profiled": 0.592,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "completeness": {
+      "S1 structural": 0.5208,
+      "S2 constraints": 0.5625,
+      "S3 profiled": 0.875,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "consistency": {
+      "S1 structural": 0.0682,
+      "S2 constraints": 0.2727,
+      "S3 profiled": 0.8864,
+      "S4 mapping": 0.9545,
+      "S5 mapping+profiled": 1.0
+    },
+    "uniqueness": {
+      "S1 structural": 1.0,
+      "S2 constraints": 1.0,
+      "S3 profiled": 0.5,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    },
+    "validity": {
+      "S1 structural": 0.45,
+      "S2 constraints": 0.6,
+      "S3 profiled": 0.95,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    }
+  },
+  "e2_by_table_rate_0.05": {
+    "members": {
+      "S1 structural": 0.2908,
+      "S2 constraints": 0.4279,
+      "S3 profiled": 0.792,
+      "S4 mapping": 0.9858,
+      "S5 mapping+profiled": 1.0
+    },
+    "members.eligibility": {
+      "S1 structural": 0.4314,
+      "S2 constraints": 0.4314,
+      "S3 profiled": 0.8366,
+      "S4 mapping": 1.0,
+      "S5 mapping+profiled": 1.0
+    }
+  },
+  "e2_S4_survivors_rate_0.05": {
+    "members.source.loadTimestamp": {
+      "case_change": 3,
+      "whitespace": 3
+    }
+  },
+  "e3_false_positives": {
+    "S1 structural": {
+      "runs": 20,
+      "false_alarm_runs": 0,
+      "mean_failing_checks": 0.0
+    },
+    "S2 constraints": {
+      "runs": 20,
+      "false_alarm_runs": 0,
+      "mean_failing_checks": 0.0
+    },
+    "S3 profiled": {
+      "runs": 20,
+      "false_alarm_runs": 14,
+      "mean_failing_checks": 0.85
+    },
+    "S4 mapping": {
+      "runs": 20,
+      "false_alarm_runs": 0,
+      "mean_failing_checks": 0.0
+    },
+    "S5 mapping+profiled": {
+      "runs": 20,
+      "false_alarm_runs": 14,
+      "mean_failing_checks": 0.85
+    }
+  },
+  "e3_profiled_failing_examples": [
+    "in_range:members:fplPercent",
+    "in_range:members:monthlyIncome"
+  ],
+  "e4_scalability_median_s": [
+    {
+      "members": 1000,
+      "segments": 1637,
+      "checks": 49,
+      "decode_s": 0.021,
+      "flatten_s": 0.016,
+      "validate_s": 0.32
+    },
+    {
+      "members": 5000,
+      "segments": 8118,
+      "checks": 49,
+      "decode_s": 0.09,
+      "flatten_s": 0.078,
+      "validate_s": 0.628
+    },
+    {
+      "members": 20000,
+      "segments": 32585,
+      "checks": 49,
+      "decode_s": 0.339,
+      "flatten_s": 0.313,
+      "validate_s": 1.726
+    },
+    {
+      "members": 50000,
+      "segments": 81565,
+      "checks": 49,
+      "decode_s": 0.901,
+      "flatten_s": 0.765,
+      "validate_s": 4.229
+    },
+    {
+      "members": 100000,
+      "segments": 163107,
+      "checks": 49,
+      "decode_s": 1.814,
+      "flatten_s": 1.564,
+      "validate_s": 8.697
+    }
+  ]
+}

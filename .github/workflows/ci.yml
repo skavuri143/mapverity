@@ -1,0 +1,131 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - run: pip install -e ".[dev]"
+      - run: ruff check src tests examples experiments docs
+      - run: ruff format --check src tests examples experiments docs
+      - run: mypy src
+
+  test:
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        exclude:
+          - {os: macos-latest, python-version: "3.10"}
+          - {os: windows-latest, python-version: "3.10"}
+    runs-on: ${{ matrix.os }}
+    # Windows is supported on a best-effort basis until the first Windows CI run is green
+    continue-on-error: ${{ matrix.os == 'windows-latest' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ matrix.python-version }}", cache: pip}
+      - run: pip install -e ".[dev]"
+      - run: python -m coverage run -m pytest --junitxml=junit.xml
+      - run: python -m coverage report --fail-under=80
+      - if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
+        run: python -m coverage xml
+      - if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with: {name: coverage, path: coverage.xml}
+
+  core-only:
+    # the core must work without any optional extra installed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install . pytest
+      - run: python -c "import mapverity; print(mapverity.__version__)"
+      - run: pytest -q tests/test_checks.py tests/test_cobol.py
+
+  examples:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - run: pip install -e ".[all]"
+      - name: Member pipeline (EBCDIC -> documents), gated
+        working-directory: examples/member_eligibility
+        run: |
+          python generate_data.py --members 1000
+          python transform.py
+          mapverity from-mapping mapping/member_data_model_mapping.csv --datasets datasets.yaml -o member.mapverity.yaml
+          mapverity mutate member.mapverity.yaml --dataset members --json mutation.json --min-score 0.9
+          mapverity validate member.mapverity.yaml --mapping mapping/member_data_model_mapping.csv \
+            --mutation-report mutation.json --gates gates.yaml --html report.html --junit results.xml
+      - name: A seeded defect must be caught
+        working-directory: examples/member_eligibility
+        run: |
+          python transform.py --defect D13_segments_inner_join_drops_last
+          if mapverity validate member.mapverity.yaml; then echo "defect not caught" && exit 1; fi
+      - name: Insurance claims (multi-record fixed width -> documents)
+        working-directory: examples/insurance_claims
+        run: |
+          python generate_data.py
+          mapverity validate file_controls.mapverity.yaml
+          python transform.py
+          mapverity from-mapping mapping/claims_mapping.csv --datasets datasets.yaml -o claims.mapverity.yaml
+          mapverity validate claims.mapverity.yaml --html report.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: example-reports
+          path: |
+            examples/member_eligibility/report.html
+            examples/insurance_claims/report.html
+
+  package:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install build twine
+      - run: python -m build
+      - run: twine check --strict dist/*
+      - run: |
+          python -m venv /tmp/v && /tmp/v/bin/pip install dist/*.whl
+          /tmp/v/bin/mapverity --version
+
+  docker:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t mapverity:ci .
+      - run: docker run --rm mapverity:ci --version
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -e ".[docs]"
+      - run: mkdocs build --strict

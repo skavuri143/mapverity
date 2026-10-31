@@ -1,0 +1,39 @@
+site_name: MapVerity
+site_description: Field-level assurance for data pipelines
+repo_url: https://github.com/YOUR-GITHUB-USER/mapverity
+edit_uri: edit/main/docs/
+theme:
+  name: material
+  features: [navigation.sections, content.code.copy, search.highlight]
+  palette:
+    - scheme: default
+      toggle: {icon: material/brightness-7, name: Dark mode}
+    - scheme: slate
+      toggle: {icon: material/brightness-4, name: Light mode}
+markdown_extensions:
+  - admonition
+  - tables
+  - toc: {permalink: true}
+  - pymdownx.superfences
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Guides:
+      - Mapping sheet: mapping-sheet.md
+      - Sources and targets: sources-and-targets.md
+      - Checks reference: checks.md
+      - Mutation testing: mutation-testing.md
+      - Risk and ERAD-QA prioritization: erad-qa.md
+      - Quality gates: quality-gates.md
+      - CI/CD: ci-cd.md
+  - Responsible use:
+      - Model card: model-card.md
+      - NASA MDP data provenance: data/nasa-mdp.md
+      - Case study template: case-study-template.md
+  - Architecture decisions:
+      - adr/index.md
+      - adr/0001-mapping-sheet-is-the-oracle.md
+      - adr/0002-independent-oracle.md
+      - adr/0003-risk-is-advisory.md
+      - adr/0004-no-third-party-data-in-repo.md
+  - FAQ: faq.md

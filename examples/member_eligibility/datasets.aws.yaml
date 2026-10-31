@@ -1,0 +1,24 @@
+# Same pipeline, reading the real landing zone in S3 and the target DocumentDB collection.
+# Credentials come from the environment (or AWS Secrets Manager via your CI), never the file.
+#   export DOCDB_USER=... DOCDB_PASS=... DOCDB_HOST=mycluster.cluster-xxxx.us-east-1.docdb.amazonaws.com
+#   wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
+name: member-eligibility-pipeline
+datasets:
+  member_master:
+    path: s3://my-landing-bucket/legacy/member/MEMBER.MASTER.dat
+    format: cobol
+    options:
+      copybook: copybooks/MEMBER-REC.cpy
+      encoding: cp037
+  elig_segments:
+    path: s3://my-landing-bucket/legacy/eligibility/      # every object under the prefix
+    format: psv
+  members:
+    path: docdb://${DOCDB_USER}:${DOCDB_PASS}@${DOCDB_HOST}:27017/?replicaSet=rs0&readPreference=secondaryPreferred
+    format: docdb
+    options:
+      database: member_hub
+      collection: members
+      key: memberId
+      tls_ca_file: global-bundle.pem
+      # query: {"source.loadTimestamp": {"$gte": "2026-10-30"}}   # validate just this run

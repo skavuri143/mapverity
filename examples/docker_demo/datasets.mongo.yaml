@@ -1,0 +1,13 @@
+name: member-pipeline-live
+datasets:
+  member_master:
+    path: landing/MEMBER.MASTER.dat
+    format: cobol
+    options: {copybook: copybooks/MEMBER-REC.cpy, encoding: cp037}
+  elig_segments:
+    path: landing/ELIG_SEGMENTS.txt
+    format: psv
+  members:
+    path: mongodb://mongo:27017/
+    format: docdb
+    options: {database: member_hub_test, collection: members_test, key: memberId}

@@ -1,0 +1,305 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  CI/CD for an S3 -> AWS Glue -> Amazon DocumentDB ETL pipeline, tested with mapverity.
+  Any push that changes the Glue job, mapping sheet, copybooks or tests runs:
+  Source -> UnitTests -> DeployToTest -> IntegrationTests (real Glue run + DocumentDB validation)
+  -> manual approval. Review IAM scope, networking and naming before using in your account.
+
+Parameters:
+  ConnectionArn:
+    Type: String
+    Description: ARN of an AWS CodeConnections (CodeStar) connection to GitHub, GitLab or Bitbucket
+  FullRepositoryId:
+    Type: String
+    Description: owner/repository
+  BranchName:
+    Type: String
+    Default: main
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+  PrivateSubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Private subnets with a NAT route (pip install) and access to the DocumentDB cluster
+  DocDbClientSecurityGroupId:
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: Security group allowed by the DocumentDB cluster's inbound rule on 27017
+  DocDbSecretArn:
+    Type: String
+    Description: Secrets Manager secret (JSON with host, port, username, password) for the TEST cluster
+  GlueRoleArn:
+    Type: String
+    Description: IAM role for the Glue job (S3 read on the buckets below, secret read, VPC access)
+  GlueConnectionName:
+    Type: String
+    Description: Existing Glue NETWORK connection into the DocumentDB VPC
+  CobrixJars:
+    Type: String
+    Description: Comma-separated S3 paths of the spark-cobol (Cobrix) JARs for --extra-jars
+  DocDbTestDatabase:
+    Type: String
+    Default: member_hub_test
+  DocDbTestCollection:
+    Type: String
+    Default: members_test
+
+Resources:
+  ArtifactBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault: { SSEAlgorithm: AES256 }
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  GlueAssetsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      VersioningConfiguration: { Status: Enabled }
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault: { SSEAlgorithm: AES256 }
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  TestLandingBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault: { SSEAlgorithm: AES256 }
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: expire-ci-fixtures
+            Status: Enabled
+            Prefix: ci-runs/
+            ExpirationInDays: 14
+
+  TestGlueJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: !Sub "${AWS::StackName}-member-to-docdb-test"
+      Role: !Ref GlueRoleArn
+      GlueVersion: "4.0"
+      WorkerType: G.1X
+      NumberOfWorkers: 2
+      Timeout: 60
+      Command:
+        Name: glueetl
+        PythonVersion: "3"
+        ScriptLocation: !Sub "s3://${GlueAssetsBucket}/glue/member_to_docdb/glue_job.py"
+      DefaultArguments:
+        "--job-language": python
+        "--extra-jars": !Ref CobrixJars
+        "--enable-continuous-cloudwatch-log": "true"
+      Connections:
+        Connections:
+          - !Ref GlueConnectionName
+
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: codebuild.amazonaws.com }
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: mapverity-ci
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: [logs:CreateLogGroup, logs:CreateLogStream, logs:PutLogEvents]
+                Resource: "*"
+              - Effect: Allow
+                Action: [s3:GetObject, s3:PutObject, s3:DeleteObject, s3:ListBucket, s3:GetBucketLocation]
+                Resource:
+                  - !GetAtt ArtifactBucket.Arn
+                  - !Sub "${ArtifactBucket.Arn}/*"
+                  - !GetAtt GlueAssetsBucket.Arn
+                  - !Sub "${GlueAssetsBucket.Arn}/*"
+                  - !GetAtt TestLandingBucket.Arn
+                  - !Sub "${TestLandingBucket.Arn}/*"
+              - Effect: Allow
+                Action: [glue:StartJobRun, glue:GetJobRun, glue:BatchStopJobRun]
+                Resource: !Sub "arn:${AWS::Partition}:glue:${AWS::Region}:${AWS::AccountId}:job/${TestGlueJob}"
+              - Effect: Allow
+                Action: secretsmanager:GetSecretValue
+                Resource: !Ref DocDbSecretArn
+              - Effect: Allow
+                Action: [codebuild:CreateReportGroup, codebuild:CreateReport, codebuild:UpdateReport,
+                         codebuild:BatchPutTestCases, codebuild:BatchPutCodeCoverages]
+                Resource: !Sub "arn:${AWS::Partition}:codebuild:${AWS::Region}:${AWS::AccountId}:report-group/*"
+              - Effect: Allow
+                Action: [ec2:CreateNetworkInterface, ec2:DescribeDhcpOptions, ec2:DescribeNetworkInterfaces,
+                         ec2:DeleteNetworkInterface, ec2:DescribeSubnets, ec2:DescribeSecurityGroups, ec2:DescribeVpcs]
+                Resource: "*"
+              - Effect: Allow
+                Action: ec2:CreateNetworkInterfacePermission
+                Resource: !Sub "arn:${AWS::Partition}:ec2:${AWS::Region}:${AWS::AccountId}:network-interface/*"
+                Condition:
+                  StringEquals:
+                    ec2:AuthorizedService: codebuild.amazonaws.com
+
+  UnitTestProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub "${AWS::StackName}-unit"
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Artifacts: { Type: CODEPIPELINE }
+      Source: { Type: CODEPIPELINE, BuildSpec: ci/aws/buildspec-unit.yml }
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:7.0
+      TimeoutInMinutes: 30
+
+  DeployProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub "${AWS::StackName}-deploy-test"
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Artifacts: { Type: CODEPIPELINE }
+      Source: { Type: CODEPIPELINE, BuildSpec: ci/aws/buildspec-deploy.yml }
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:7.0
+        EnvironmentVariables:
+          - { Name: GLUE_ASSETS_BUCKET, Value: !Ref GlueAssetsBucket }
+      TimeoutInMinutes: 10
+
+  IntegrationTestProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub "${AWS::StackName}-integration"
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Artifacts: { Type: CODEPIPELINE }
+      Source: { Type: CODEPIPELINE, BuildSpec: ci/aws/buildspec-integration.yml }
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:7.0
+        EnvironmentVariables:
+          - { Name: GLUE_JOB_NAME, Value: !Ref TestGlueJob }
+          - { Name: GLUE_ASSETS_BUCKET, Value: !Ref GlueAssetsBucket }
+          - { Name: TEST_LANDING_BUCKET, Value: !Ref TestLandingBucket }
+          - { Name: DOCDB_SECRET_ID, Value: !Ref DocDbSecretArn }
+          - { Name: DOCDB_TEST_DATABASE, Value: !Ref DocDbTestDatabase }
+          - { Name: DOCDB_TEST_COLLECTION, Value: !Ref DocDbTestCollection }
+      VpcConfig:
+        VpcId: !Ref VpcId
+        Subnets: !Ref PrivateSubnetIds
+        SecurityGroupIds: [!Ref DocDbClientSecurityGroupId]
+      TimeoutInMinutes: 90
+
+  PipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: codepipeline.amazonaws.com }
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: pipeline
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: [s3:GetObject, s3:GetObjectVersion, s3:PutObject, s3:GetBucketVersioning, s3:ListBucket]
+                Resource: [!GetAtt ArtifactBucket.Arn, !Sub "${ArtifactBucket.Arn}/*"]
+              - Effect: Allow
+                Action: [codebuild:StartBuild, codebuild:BatchGetBuilds]
+                Resource:
+                  - !GetAtt UnitTestProject.Arn
+                  - !GetAtt DeployProject.Arn
+                  - !GetAtt IntegrationTestProject.Arn
+              - Effect: Allow
+                Action: [codestar-connections:UseConnection, codeconnections:UseConnection]
+                Resource: !Ref ConnectionArn
+
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Sub "${AWS::StackName}"
+      PipelineType: V2
+      RoleArn: !GetAtt PipelineRole.Arn
+      ArtifactStore: { Type: S3, Location: !Ref ArtifactBucket }
+      # Run only when something that affects the ETL or its tests changes.
+      Triggers:
+        - ProviderType: CodeStarSourceConnection
+          GitConfiguration:
+            SourceActionName: Source
+            Push:
+              - Branches:
+                  Includes: [!Ref BranchName]
+                FilePaths:
+                  Includes:
+                    - "examples/member_eligibility/glue_job.py"
+                    - "examples/member_eligibility/mapping/**"
+                    - "examples/member_eligibility/copybooks/**"
+                    - "src/**"
+                    - "tests/**"
+                    - "ci/**"
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: Source
+              ActionTypeId: { Category: Source, Owner: AWS, Provider: CodeStarSourceConnection, Version: "1" }
+              Configuration:
+                ConnectionArn: !Ref ConnectionArn
+                FullRepositoryId: !Ref FullRepositoryId
+                BranchName: !Ref BranchName
+                OutputArtifactFormat: CODE_ZIP
+              OutputArtifacts: [{ Name: Src }]
+        - Name: UnitTests
+          Actions:
+            - Name: UnitAndLocalMapping
+              ActionTypeId: { Category: Build, Owner: AWS, Provider: CodeBuild, Version: "1" }
+              Configuration: { ProjectName: !Ref UnitTestProject }
+              InputArtifacts: [{ Name: Src }]
+              OutputArtifacts: [{ Name: UnitReports }]
+        - Name: DeployToTest
+          Actions:
+            - Name: PublishGlueScript
+              ActionTypeId: { Category: Build, Owner: AWS, Provider: CodeBuild, Version: "1" }
+              Configuration: { ProjectName: !Ref DeployProject }
+              InputArtifacts: [{ Name: Src }]
+        - Name: IntegrationTests
+          Actions:
+            - Name: GlueToDocumentDB
+              ActionTypeId: { Category: Build, Owner: AWS, Provider: CodeBuild, Version: "1" }
+              Configuration: { ProjectName: !Ref IntegrationTestProject }
+              InputArtifacts: [{ Name: Src }]
+              OutputArtifacts: [{ Name: IntegrationReports }]
+        - Name: Approve
+          Actions:
+            - Name: PromoteToProduction
+              ActionTypeId: { Category: Approval, Owner: AWS, Provider: Manual, Version: "1" }
+              Configuration:
+                CustomData: "Integration tests passed. Review the mapverity report in CodeBuild > Report groups before promoting."
+
+Outputs:
+  PipelineName:
+    Value: !Ref Pipeline
+  GlueAssetsBucket:
+    Value: !Ref GlueAssetsBucket
+  TestLandingBucket:
+    Value: !Ref TestLandingBucket
+  TestGlueJob:
+    Value: !Ref TestGlueJob

@@ -1,0 +1,510 @@
+{
+  "meta": {
+    "mapverity": "0.1.0",
+    "python": "3.13.18",
+    "releases": 300,
+    "warm_up": 100,
+    "members_per_release": 1000,
+    "evaluated_releases_with_detectable_defects": 64,
+    "checks": 49,
+    "learned_weights": {
+      "hist": 1.015390817594696,
+      "risk": 1.240101886910492,
+      "change": 0.6775209285906807,
+      "drift": 1.932193371424472,
+      "last": 0.13479299547965953,
+      "intercept": -3.211867307479143
+    },
+    "learned_alpha": 0.0,
+    "alpha_tuning_releases": 36,
+    "wall_clock_s": 221.1
+  },
+  "strategies": {
+    "ERAD (default weights)": {
+      "apfd": {
+        "mean": 0.5789221938775511,
+        "ci_low": 0.539593962585034,
+        "ci_high": 0.6245748299319728
+      },
+      "apfdc": {
+        "mean": 0.9394834353877661,
+        "ci_low": 0.9291206696358698,
+        "ci_high": 0.9497955679107838
+      },
+      "first_failure_cost_share": {
+        "mean": 0.07185193714721473,
+        "ci_low": 0.059471639398527926,
+        "ci_high": 0.08352975669004632
+      },
+      "found_at_10pct": {
+        "mean": 0.6979166666666666,
+        "ci_low": 0.5963541666666667,
+        "ci_high": 0.8046875
+      },
+      "found_at_25pct": {
+        "mean": 0.9947916666666667,
+        "ci_low": 0.984375,
+        "ci_high": 1.0
+      },
+      "vs_erad_apfdc": {
+        "wilcoxon_p": 6.563359374433781e-06,
+        "a12_erad_greater": 0.7265625
+      },
+      "vs_erad_first_failure_cost_share": {
+        "wilcoxon_p": 2.6720636567678884e-05,
+        "a12_erad_greater": 0.343505859375
+      }
+    },
+    "ERAD (learned)": {
+      "apfd": {
+        "mean": 0.9663052721088434,
+        "ci_low": 0.9607249149659863,
+        "ci_high": 0.971141581632653
+      },
+      "apfdc": {
+        "mean": 0.9616012227940696,
+        "ci_low": 0.9556858067479731,
+        "ci_high": 0.9670339863203826
+      },
+      "first_failure_cost_share": {
+        "mean": 0.051911510726949106,
+        "ci_low": 0.04638212786608448,
+        "ci_high": 0.05695649795431096
+      },
+      "found_at_10pct": {
+        "mean": 0.9557291666666666,
+        "ci_low": 0.9166666666666667,
+        "ci_high": 0.9869791666666666
+      },
+      "found_at_25pct": {
+        "mean": 0.9947916666666667,
+        "ci_low": 0.984375,
+        "ci_high": 1.0
+      }
+    },
+    "ERAD w/o change": {
+      "apfd": {
+        "mean": 0.9663052721088434,
+        "ci_low": 0.9607249149659863,
+        "ci_high": 0.971141581632653
+      },
+      "apfdc": {
+        "mean": 0.9616012227940696,
+        "ci_low": 0.9556858067479731,
+        "ci_high": 0.9670339863203826
+      },
+      "first_failure_cost_share": {
+        "mean": 0.051911510726949106,
+        "ci_low": 0.04638212786608448,
+        "ci_high": 0.05695649795431096
+      },
+      "found_at_10pct": {
+        "mean": 0.9557291666666666,
+        "ci_low": 0.9166666666666667,
+        "ci_high": 0.9869791666666666
+      },
+      "found_at_25pct": {
+        "mean": 0.9947916666666667,
+        "ci_low": 0.984375,
+        "ci_high": 1.0
+      },
+      "vs_erad_apfdc": {
+        "wilcoxon_p": 1.0,
+        "a12_erad_greater": 0.5
+      },
+      "vs_erad_first_failure_cost_share": {
+        "wilcoxon_p": 1.0,
+        "a12_erad_greater": 0.5
+      }
+    },
+    "ERAD w/o cost": {
+      "apfd": {
+        "mean": 0.9663052721088434,
+        "ci_low": 0.9607249149659863,
+        "ci_high": 0.971141581632653
+      },
+      "apfdc": {
+        "mean": 0.9616012227940696,
+        "ci_low": 0.9556858067479731,
+        "ci_high": 0.9670339863203826
+      },
+      "first_failure_cost_share": {
+        "mean": 0.051911510726949106,
+        "ci_low": 0.04638212786608448,
+        "ci_high": 0.05695649795431096
+      },
+      "found_at_10pct": {
+        "mean": 0.9557291666666666,
+        "ci_low": 0.9166666666666667,
+        "ci_high": 0.9869791666666666
+      },
+      "found_at_25pct": {
+        "mean": 0.9947916666666667,
+        "ci_low": 0.984375,
+        "ci_high": 1.0
+      },
+      "vs_erad_apfdc": {
+        "wilcoxon_p": 1.0,
+        "a12_erad_greater": 0.5
+      },
+      "vs_erad_first_failure_cost_share": {
+        "wilcoxon_p": 1.0,
+        "a12_erad_greater": 0.5
+      }
+    },
+    "ERAD w/o drift": {
+      "apfd": {
+        "mean": 0.9156037414965985,
+        "ci_low": 0.893813775510204,
+        "ci_high": 0.9346845769557823
+      },
+      "apfdc": {
+        "mean": 0.9113746505005635,
+        "ci_low": 0.8884217851937103,
+        "ci_high": 0.931150825375384
+      },
+      "first_failure_cost_share": {
+        "mean": 0.09784976088370567,
+        "ci_low": 0.07882047394094192,
+        "ci_high": 0.12036786398415694
+      },
+      "found_at_10pct": {
+        "mean": 0.6145833333333333,
+        "ci_low": 0.5,
+        "ci_high": 0.7239583333333333
+      },
+      "found_at_25pct": {
+        "mean": 0.921875,
+        "ci_low": 0.8541666666666666,
+        "ci_high": 0.9791666666666666
+      },
+      "vs_erad_apfdc": {
+        "wilcoxon_p": 1.3280891281945465e-07,
+        "a12_erad_greater": 0.672607421875
+      },
+      "vs_erad_first_failure_cost_share": {
+        "wilcoxon_p": 4.592458941471797e-06,
+        "a12_erad_greater": 0.356689453125
+      }
+    },
+    "ERAD w/o hist": {
+      "apfd": {
+        "mean": 0.9444621598639455,
+        "ci_low": 0.9388804740646258,
+        "ci_high": 0.9499893707482994
+      },
+      "apfdc": {
+        "mean": 0.958793319786261,
+        "ci_low": 0.9533200007321363,
+        "ci_high": 0.9640192768651115
+      },
+      "first_failure_cost_share": {
+        "mean": 0.05470880029855782,
+        "ci_low": 0.048850682048218914,
+        "ci_high": 0.05989917598494348
+      },
+      "found_at_10pct": {
+        "mean": 0.9557291666666666,
+        "ci_low": 0.9166666666666667,
+        "ci_high": 0.9869791666666666
+      },
+      "found_at_25pct": {
+        "mean": 0.9947916666666667,
+        "ci_low": 0.984375,
+        "ci_high": 1.0
+      },
+      "vs_erad_apfdc": {
+        "wilcoxon_p": 3.4292934205684186e-06,
+        "a12_erad_greater": 0.5799560546875
+      },
+      "vs_erad_first_failure_cost_share": {
+        "wilcoxon_p": 8.934762975430268e-06,
+        "a12_erad_greater": 0.4478759765625
+      }
+    },
+    "ERAD w/o last": {
+      "apfd": {
+        "mean": 0.9661989795918366,
+        "ci_low": 0.96051100127551,
+        "ci_high": 0.971141581632653
+      },
+      "apfdc": {
+        "mean": 0.9615132117442802,
+        "ci_low": 0.9555374463292353,
+        "ci_high": 0.9670254104550384
+      },
+      "first_failure_cost_share": {
+        "mean": 0.0521755438763174,
+        "ci_low": 0.046606961728513745,
+        "ci_high": 0.05720616820668107
+      },
+      "found_at_10pct": {
+        "mean": 0.9557291666666666,
+        "ci_low": 0.9166666666666667,
+        "ci_high": 0.9869791666666666
+      },
+      "found_at_25pct": {
+        "mean": 0.9947916666666667,
+        "ci_low": 0.984375,
+        "ci_high": 1.0
+      },
+      "vs_erad_apfdc": {
+        "wilcoxon_p": 0.31731050786291415,
+        "a12_erad_greater": 0.5001220703125
+      },
+      "vs_erad_first_failure_cost_share": {
+        "wilcoxon_p": 0.31731050786291415,
+        "a12_erad_greater": 0.4957275390625
+      }
+    },
+    "ERAD w/o risk": {
+      "apfd": {
+        "mean": 0.9785289115646257,
+        "ci_low": 0.9729485544217686,
+        "ci_high": 0.9832602572278911
+      },
+      "apfdc": {
+        "mean": 0.9695147203334773,
+        "ci_low": 0.9627085153862179,
+        "ci_high": 0.975573832258594
+      },
+      "first_failure_cost_share": {
+        "mean": 0.044496873356604426,
+        "ci_low": 0.03754924100633478,
+        "ci_high": 0.05153358137960915
+      },
+      "found_at_10pct": {
+        "mean": 0.9375,
+        "ci_low": 0.8854166666666667,
+        "ci_high": 0.9817708333333333
+      },
+      "found_at_25pct": {
+        "mean": 1.0,
+        "ci_low": 1.0,
+        "ci_high": 1.0
+      },
+      "vs_erad_apfdc": {
+        "wilcoxon_p": 2.6380832600476355e-06,
+        "a12_erad_greater": 0.3258056640625
+      },
+      "vs_erad_first_failure_cost_share": {
+        "wilcoxon_p": 1.1730677971472838e-05,
+        "a12_erad_greater": 0.61279296875
+      }
+    },
+    "change-based": {
+      "apfd": {
+        "mean": 0.8554421768707483,
+        "ci_low": 0.8380620216836734,
+        "ci_high": 0.8732993197278911
+      },
+      "apfdc": {
+        "mean": 0.9178977632369092,
+        "ci_low": 0.9001394042135088,
+        "ci_high": 0.9353840579327145
+      },
+      "first_failure_cost_share": {
+        "mean": 0.09131575114109308,
+        "ci_low": 0.07252046509707588,
+        "ci_high": 0.11063002812712791
+      },
+      "found_at_10pct": {
+        "mean": 0.5598958333333333,
+        "ci_low": 0.44791666666666663,
+        "ci_high": 0.6771484374999995
+      },
+      "found_at_25pct": {
+        "mean": 0.9427083333333333,
+        "ci_low": 0.8932291666666666,
+        "ci_high": 0.984375
+      },
+      "vs_erad_apfdc": {
+        "wilcoxon_p": 4.071656449450501e-06,
+        "a12_erad_greater": 0.68798828125
+      },
+      "vs_erad_first_failure_cost_share": {
+        "wilcoxon_p": 4.921680845593846e-05,
+        "a12_erad_greater": 0.37109375
+      }
+    },
+    "cheapest-first": {
+      "apfd": {
+        "mean": 0.3370535714285714,
+        "ci_low": 0.2811383928571428,
+        "ci_high": 0.3996625212585033
+      },
+      "apfdc": {
+        "mean": 0.6582357475225061,
+        "ci_low": 0.5866900801656197,
+        "ci_high": 0.7330256269568032
+      },
+      "first_failure_cost_share": {
+        "mean": 0.3377844768671226,
+        "ci_low": 0.26110540297619517,
+        "ci_high": 0.41361510220364067
+      },
+      "found_at_10pct": {
+        "mean": 0.23958333333333331,
+        "ci_low": 0.1484375,
+        "ci_high": 0.34121093749999964
+      },
+      "found_at_25pct": {
+        "mean": 0.4713541666666667,
+        "ci_low": 0.3567708333333333,
+        "ci_high": 0.5912109374999996
+      },
+      "vs_erad_apfdc": {
+        "wilcoxon_p": 1.6965113295440964e-10,
+        "a12_erad_greater": 0.7978515625
+      },
+      "vs_erad_first_failure_cost_share": {
+        "wilcoxon_p": 2.0727055502587415e-09,
+        "a12_erad_greater": 0.253173828125
+      }
+    },
+    "history": {
+      "apfd": {
+        "mean": 0.7535607993197279,
+        "ci_low": 0.7143853635204082,
+        "ci_high": 0.7946999893707484
+      },
+      "apfdc": {
+        "mean": 0.5943449597202328,
+        "ci_low": 0.5336465568812196,
+        "ci_high": 0.6603819397763356
+      },
+      "first_failure_cost_share": {
+        "mean": 0.4052359533879722,
+        "ci_low": 0.3416761728332967,
+        "ci_high": 0.4672609438670969
+      },
+      "found_at_10pct": {
+        "mean": 0.109375,
+        "ci_low": 0.046875,
+        "ci_high": 0.1875
+      },
+      "found_at_25pct": {
+        "mean": 0.3359375,
+        "ci_low": 0.2265625,
+        "ci_high": 0.4505208333333333
+      },
+      "vs_erad_apfdc": {
+        "wilcoxon_p": 9.454791110133027e-12,
+        "a12_erad_greater": 0.9130859375
+      },
+      "vs_erad_first_failure_cost_share": {
+        "wilcoxon_p": 9.454791110133027e-12,
+        "a12_erad_greater": 0.06640625
+      }
+    },
+    "oracle": {
+      "apfd": {
+        "mean": 0.9870323129251699,
+        "ci_low": 0.9849064625850339,
+        "ci_high": 0.9886798469387754
+      },
+      "apfdc": {
+        "mean": 0.9792205689105464,
+        "ci_low": 0.9758958552703486,
+        "ci_high": 0.9826939992836391
+      },
+      "first_failure_cost_share": {
+        "mean": 0.034292466240886665,
+        "ci_low": 0.028789530036598506,
+        "ci_high": 0.03940781513072026
+      },
+      "found_at_10pct": {
+        "mean": 0.96875,
+        "ci_low": 0.9375,
+        "ci_high": 0.9921875
+      },
+      "found_at_25pct": {
+        "mean": 1.0,
+        "ci_low": 1.0,
+        "ci_high": 1.0
+      },
+      "vs_erad_apfdc": {
+        "wilcoxon_p": 3.1769251182286963e-10,
+        "a12_erad_greater": 0.2042236328125
+      },
+      "vs_erad_first_failure_cost_share": {
+        "wilcoxon_p": 2.386484752546066e-10,
+        "a12_erad_greater": 0.7193603515625
+      }
+    },
+    "random": {
+      "apfd": {
+        "mean": 0.6028566113945579,
+        "ci_low": 0.5782523517219388,
+        "ci_high": 0.6289738121811225
+      },
+      "apfdc": {
+        "mean": 0.6043629649908842,
+        "ci_low": 0.5790968207849414,
+        "ci_high": 0.6303164595121097
+      },
+      "first_failure_cost_share": {
+        "mean": 0.3905641388408475,
+        "ci_low": 0.3594655310583824,
+        "ci_high": 0.42150260044455024
+      },
+      "found_at_10pct": {
+        "mean": 0.16367187500000002,
+        "ci_low": 0.13971028645833333,
+        "ci_high": 0.19075846354166667
+      },
+      "found_at_25pct": {
+        "mean": 0.36080729166666664,
+        "ci_low": 0.3265559895833333,
+        "ci_high": 0.3959635416666667
+      },
+      "vs_erad_apfdc": {
+        "wilcoxon_p": 3.5254980732707397e-12,
+        "a12_erad_greater": 1.0
+      },
+      "vs_erad_first_failure_cost_share": {
+        "wilcoxon_p": 3.5254980732707397e-12,
+        "a12_erad_greater": 0.0
+      }
+    },
+    "risk-only": {
+      "apfd": {
+        "mean": 0.6263818027210885,
+        "ci_low": 0.5615260948129251,
+        "ci_high": 0.6889508928571427
+      },
+      "apfdc": {
+        "mean": 0.6517634504839009,
+        "ci_low": 0.5851432397812585,
+        "ci_high": 0.7164355231500775
+      },
+      "first_failure_cost_share": {
+        "mean": 0.3449258887225878,
+        "ci_low": 0.2783421966567295,
+        "ci_high": 0.4136634452385678
+      },
+      "found_at_10pct": {
+        "mean": 0.1796875,
+        "ci_low": 0.09375,
+        "ci_high": 0.28125
+      },
+      "found_at_25pct": {
+        "mean": 0.4453125,
+        "ci_low": 0.33072916666666663,
+        "ci_high": 0.5598958333333333
+      },
+      "vs_erad_apfdc": {
+        "wilcoxon_p": 6.819856375950049e-12,
+        "a12_erad_greater": 0.9091796875
+      },
+      "vs_erad_first_failure_cost_share": {
+        "wilcoxon_p": 1.0375682539729785e-11,
+        "a12_erad_greater": 0.1015625
+      }
+    }
+  },
+  "erad_overhead_share_of_suite_cost": {
+    "median": 0.1926329363690829,
+    "p90": 0.21770013167970034
+  }
+}

@@ -1,0 +1,38 @@
+# Stage 3: run the real Glue job on fixture data and validate DocumentDB output against the
+# data-model mapping. This CodeBuild project runs inside the DocumentDB VPC (see pipeline.yaml).
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - pip install --upgrade pip
+      - pip install -e ".[aws]"
+      - curl -sSfo global-bundle.pem https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
+  build:
+    commands:
+      - >
+        python ci/aws/run_integration.py
+        --glue-job "${GLUE_JOB_NAME}"
+        --landing-bucket "${TEST_LANDING_BUCKET}"
+        --copybook-s3 "s3://${GLUE_ASSETS_BUCKET}/glue/member_to_docdb/copybooks/MEMBER-REC.cpy"
+        --docdb-secret-id "${DOCDB_SECRET_ID}"
+        --database "${DOCDB_TEST_DATABASE}"
+        --collection "${DOCDB_TEST_COLLECTION}"
+        --tls-ca-file global-bundle.pem
+        --members 1000
+        --reports reports
+
+reports:
+  mapverity-integration:
+    base-directory: reports
+    files:
+      - "*.xml"
+    file-format: JUNITXML
+
+artifacts:
+  base-directory: reports
+  files:
+    - "**/*"
+  name: integration-reports

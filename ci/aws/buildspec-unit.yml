@@ -1,0 +1,37 @@
+# Stage 1 (no AWS resources touched): framework unit tests + local end-to-end run of the
+# mapping on synthetic data + mutation-score quality gate on the generated test suite.
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - pip install --upgrade pip
+      - pip install -e ".[dev]"
+  build:
+    commands:
+      - mkdir -p reports
+      - pytest -q --junitxml=reports/unit-tests.xml
+      - cd examples/member_eligibility
+      - python generate_data.py --members 1000 --seed 7
+      - python transform.py
+      # recompile the checks from the mapping sheet on every build, so a mapping change is tested immediately
+      - mapverity from-mapping mapping/member_data_model_mapping.csv --datasets datasets.yaml -o member.mapverity.yaml
+      - mapverity validate member.mapverity.yaml --junit ../../reports/local-mapping.xml --markdown ../../reports/local-mapping.md
+      - mapverity coverage member.mapverity.yaml --mapping mapping/member_data_model_mapping.csv > ../../reports/mapping-coverage.json
+      # fail the build if the suite stops catching injected faults (e.g. someone deletes rules from the mapping)
+      - mapverity mutate member.mapverity.yaml --dataset members --rate 0.05 --min-score 0.85 --json ../../reports/mutation-members.json
+
+reports:
+  mapverity-unit:
+    base-directory: reports
+    files:
+      - "*.xml"
+    file-format: JUNITXML
+
+artifacts:
+  base-directory: reports
+  files:
+    - "**/*"
+  name: unit-reports

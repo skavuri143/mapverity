@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use MapVerity in research or a publication, please cite it as below."
+title: "MapVerity: field-level assurance for data pipelines"
+abstract: >-
+  Open-source framework for mapping-driven source-to-target validation of data pipelines, data
+  mutation testing, explainable defect-risk prediction and risk-adaptive test prioritization
+  (ERAD-QA) with deterministic quality gates.
+authors:
+  - family-names: Kavuri
+    given-names: Srikanth
+    email: srikanthkavuri.research@gmail.com
+version: 0.1.0
+date-released: 2026-10-31
+license: Apache-2.0
+repository-code: "https://github.com/YOUR-GITHUB-USER/mapverity"
+keywords:
+  - ETL testing
+  - data validation
+  - source-to-target mapping
+  - mutation testing
+  - test prioritization
+  - defect prediction
+  - explainable AI
+  - healthcare data
+  - insurance data

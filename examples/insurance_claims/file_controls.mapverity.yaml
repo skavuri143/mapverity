@@ -1,0 +1,41 @@
+# Inbound file integrity, checked BEFORE the transformation runs: control totals in the trailer,
+# orphan lines, and claim totals that disagree with their lines.
+name: claims-file-controls
+datasets:
+  claims_file:
+    path: landing/
+    format: fixed_width
+    options: {layout: layouts/CLAIMS-FILE.layout.csv, multi_record: true, type_field: rec_type}
+checks:
+  - type: control_total
+    name: trailer:claim-count
+    dataset: claims_file.CLM
+    control_dataset: claims_file.TRL
+    control_column: claim_count
+    agg: count
+  - type: control_total
+    name: trailer:total-paid
+    dataset: claims_file.CLM
+    column: total_paid
+    control_dataset: claims_file.TRL
+    control_column: total_paid
+    agg: sum
+  - type: referential
+    name: lines-belong-to-claims
+    dataset: claims_file.LIN
+    column: claim_id
+    ref_dataset: claims_file.CLM
+    ref_column: claim_id
+  - type: group_aggregate
+    name: claim-billed-equals-sum-of-lines
+    dataset: claims_file.CLM
+    column: total_billed
+    source: claims_file.LIN
+    key: claim_id
+    expression: num(col("line_billed"))
+    agg: sum
+    tolerance: 0.01
+  - type: unique
+    name: claim-id-unique
+    dataset: claims_file.CLM
+    column: claim_id
