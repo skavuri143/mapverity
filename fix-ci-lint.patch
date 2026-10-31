@@ -1,0 +1,126 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index 652a85a..4fee219 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -41,7 +41,7 @@ ai = ["scikit-learn>=1.3", "xgboost>=2.0", "shap>=0.44", "imbalanced-learn>=0.12
+ explain-lime = ["lime>=0.2.0.1"]
+ all = ["mapverity[aws,sql,api,excel,parquet,ai]"]
+ dev = [
+-  "mapverity[all]", "pytest>=7", "pytest-cov>=4", "ruff>=0.5", "mypy>=1.8", "types-PyYAML", "pandas-stubs",
++  "mapverity[all]", "pytest>=7", "pytest-cov>=4", "ruff==0.17.3", "mypy==2.4.1", "types-PyYAML==6.0.12.20261030", "pandas-stubs==3.1.0.261029",
+   "moto[s3]>=5", "mongomock>=4.1", "matplotlib>=3.7", "build>=1.0",
+ ]
+ docs = ["mkdocs>=1.5", "mkdocs-material>=9"]
+diff --git a/src/mapverity/ai/predictor.py b/src/mapverity/ai/predictor.py
+index cc7dec2..89cd793 100644
+--- a/src/mapverity/ai/predictor.py
++++ b/src/mapverity/ai/predictor.py
+@@ -110,11 +110,13 @@ class DefectRiskModel:
+                 from imblearn.over_sampling import SMOTE
+             except ImportError as exc:  # pragma: no cover - optional extra
+                 raise ImportError("smote=True needs imbalanced-learn: pip install 'mapverity[ai]'") from exc
+-            k = int(min(5, yy.sum() - 1))
++            positives = int(yy.sum())
++            k = min(5, positives - 1)
+             Xp, yy = SMOTE(k_neighbors=max(k, 1), random_state=self.seed).fit_resample(Xp, yy)
+             pos_weight = 1.0
+         else:
+-            pos_weight = float((len(yy) - yy.sum()) / max(yy.sum(), 1))
++            positives = int(yy.sum())
++            pos_weight = float(len(yy) - positives) / max(positives, 1)
+         self._model = _make_estimator(self.estimator, self.seed, pos_weight)
+         self._model.fit(Xp, yy)
+         self._trained_on = {
+@@ -214,7 +216,8 @@ def cross_validate(
+     from sklearn.model_selection import RepeatedStratifiedKFold
+ 
+     X, y = df[features], df[label].to_numpy()
+-    n_splits = int(min(folds, max(2, y.sum()), max(2, len(y) - y.sum())))
++    positives = int(y.sum())
++    n_splits = min(folds, max(2, positives), max(2, len(y) - positives))
+     rskf = RepeatedStratifiedKFold(n_splits=n_splits, n_repeats=repeats, random_state=seed)
+     rows = []
+     for i, (tr, te) in enumerate(rskf.split(X, y)):
+diff --git a/src/mapverity/connectors/sql.py b/src/mapverity/connectors/sql.py
+index e33c1ea..5832ee6 100644
+--- a/src/mapverity/connectors/sql.py
++++ b/src/mapverity/connectors/sql.py
+@@ -12,7 +12,7 @@ Redshift, Snowflake, SQLite, ...). Requires `pip install 'mapverity[sql]'` plus
+ from __future__ import annotations
+ 
+ import os
+-from typing import Any, Dict
++from typing import Any, Dict, Optional
+ 
+ import pandas as pd
+ 
+@@ -22,14 +22,16 @@ def read_sql(url: str, options: Dict[str, Any]) -> pd.DataFrame:
+         from sqlalchemy import create_engine, text
+     except ImportError as exc:  # pragma: no cover - optional extra
+         raise ImportError("format 'sql' needs SQLAlchemy: pip install 'mapverity[sql]'") from exc
+-    query = options.get("query")
+-    table = options.get("table")
++    query: Optional[str] = options.get("query")
++    table: Optional[str] = options.get("table")
+     if not query and not table:
+         raise ValueError("format 'sql' needs options.query or options.table")
+     if table and not query:
+         if not all(part.replace("_", "").isalnum() for part in str(table).split(".")):
+             raise ValueError(f"invalid table name {table!r}")
+         query = f"select * from {table}"  # noqa: S608 - identifier validated above
++    if query is None:  # unreachable: one of query/table is set above
++        raise ValueError("format 'sql' needs options.query or options.table")
+     engine = create_engine(os.path.expandvars(url))
+     try:
+         with engine.connect() as conn:
+diff --git a/src/mapverity/core/gates.py b/src/mapverity/core/gates.py
+index 1a72861..59322fe 100644
+--- a/src/mapverity/core/gates.py
++++ b/src/mapverity/core/gates.py
+@@ -41,7 +41,9 @@ class GatePolicy:
+     @classmethod
+     def load(cls, path: Union[str, Path]) -> "GatePolicy":
+         d = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+-        d = d.get("gates", d)
++        d = d.get("gates", d) or {}
++        if not isinstance(d, dict):
++            raise ValueError("gate policy must be a mapping of settings")
+         known = set(cls.__dataclass_fields__)
+         unknown = set(d) - known
+         if unknown:
+diff --git a/src/mapverity/validation/checks.py b/src/mapverity/validation/checks.py
+index 48131e0..a292bae 100644
+--- a/src/mapverity/validation/checks.py
++++ b/src/mapverity/validation/checks.py
+@@ -285,7 +285,9 @@ def _keys(check: CheckSpec):
+ def key_series(df: pd.DataFrame, key) -> pd.Series:
+     """String key for a column or a composite key (values joined with '|')."""
+     cols = [key] if isinstance(key, str) else list(key)
+-    out = None
++    if not cols:
++        raise ValueError("a key needs at least one column")
++    out: Optional[pd.Series] = None
+     for c in cols:
+         # a key part is a column name, or an expression such as to_date(col("START_DT"), "%Y%m%d")
+         v = df[c] if c in df.columns else evaluate(c, df)
+@@ -298,6 +300,7 @@ def key_series(df: pd.DataFrame, key) -> pd.Series:
+             s = v.dt.strftime("%Y-%m-%d").astype("string")
+         s = s.fillna("<null>")  # no trimming: a padded key is a defect, not a match
+         out = s if out is None else out + "|" + s
++    assert out is not None
+     return out
+ 
+ 
+diff --git a/src/mapverity/validation/mutate.py b/src/mapverity/validation/mutate.py
+index 6e03fe1..dcfadaf 100644
+--- a/src/mapverity/validation/mutate.py
++++ b/src/mapverity/validation/mutate.py
+@@ -54,7 +54,7 @@ def operator(name: str, fault_class: str, scope: str = "column", applies_to=None
+ def _rows(df: pd.DataFrame, rng: np.random.Generator, rate: float, eligible: Optional[pd.Series] = None) -> np.ndarray:
+     idx = df.index if eligible is None else df.index[eligible.to_numpy()]
+     if len(idx) == 0:
+-        return np.array([], dtype=df.index.dtype)
++        return np.array([], dtype=object)
+     k = max(1, int(round(len(df) * rate)))
+     k = min(k, len(idx))
+     return rng.choice(idx, size=k, replace=False)

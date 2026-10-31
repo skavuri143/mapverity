@@ -54,7 +54,7 @@ def operator(name: str, fault_class: str, scope: str = "column", applies_to=None
 def _rows(df: pd.DataFrame, rng: np.random.Generator, rate: float, eligible: Optional[pd.Series] = None) -> np.ndarray:
     idx = df.index if eligible is None else df.index[eligible.to_numpy()]
     if len(idx) == 0:
-        return np.array([], dtype=df.index.dtype)
+        return np.array([], dtype=object)
     k = max(1, int(round(len(df) * rate)))
     k = min(k, len(idx))
     return rng.choice(idx, size=k, replace=False)

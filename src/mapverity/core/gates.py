@@ -41,7 +41,9 @@ class GatePolicy:
     @classmethod
     def load(cls, path: Union[str, Path]) -> "GatePolicy":
         d = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
-        d = d.get("gates", d)
+        d = d.get("gates", d) or {}
+        if not isinstance(d, dict):
+            raise ValueError("gate policy must be a mapping of settings")
         known = set(cls.__dataclass_fields__)
         unknown = set(d) - known
         if unknown:

@@ -110,11 +110,13 @@ class DefectRiskModel:
                 from imblearn.over_sampling import SMOTE
             except ImportError as exc:  # pragma: no cover - optional extra
                 raise ImportError("smote=True needs imbalanced-learn: pip install 'mapverity[ai]'") from exc
-            k = int(min(5, yy.sum() - 1))
+            positives = int(yy.sum())
+            k = min(5, positives - 1)
             Xp, yy = SMOTE(k_neighbors=max(k, 1), random_state=self.seed).fit_resample(Xp, yy)
             pos_weight = 1.0
         else:
-            pos_weight = float((len(yy) - yy.sum()) / max(yy.sum(), 1))
+            positives = int(yy.sum())
+            pos_weight = float(len(yy) - positives) / max(positives, 1)
         self._model = _make_estimator(self.estimator, self.seed, pos_weight)
         self._model.fit(Xp, yy)
         self._trained_on = {
@@ -214,7 +216,8 @@ def cross_validate(
     from sklearn.model_selection import RepeatedStratifiedKFold
 
     X, y = df[features], df[label].to_numpy()
-    n_splits = int(min(folds, max(2, y.sum()), max(2, len(y) - y.sum())))
+    positives = int(y.sum())
+    n_splits = min(folds, max(2, positives), max(2, len(y) - positives))
     rskf = RepeatedStratifiedKFold(n_splits=n_splits, n_repeats=repeats, random_state=seed)
     rows = []
     for i, (tr, te) in enumerate(rskf.split(X, y)):

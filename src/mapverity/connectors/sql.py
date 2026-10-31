@@ -12,7 +12,7 @@ Redshift, Snowflake, SQLite, ...). Requires `pip install 'mapverity[sql]'` plus 
 from __future__ import annotations
 
 import os
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import pandas as pd
 
@@ -22,14 +22,16 @@ def read_sql(url: str, options: Dict[str, Any]) -> pd.DataFrame:
         from sqlalchemy import create_engine, text
     except ImportError as exc:  # pragma: no cover - optional extra
         raise ImportError("format 'sql' needs SQLAlchemy: pip install 'mapverity[sql]'") from exc
-    query = options.get("query")
-    table = options.get("table")
+    query: Optional[str] = options.get("query")
+    table: Optional[str] = options.get("table")
     if not query and not table:
         raise ValueError("format 'sql' needs options.query or options.table")
     if table and not query:
         if not all(part.replace("_", "").isalnum() for part in str(table).split(".")):
             raise ValueError(f"invalid table name {table!r}")
         query = f"select * from {table}"  # noqa: S608 - identifier validated above
+    if query is None:  # unreachable: one of query/table is set above
+        raise ValueError("format 'sql' needs options.query or options.table")
     engine = create_engine(os.path.expandvars(url))
     try:
         with engine.connect() as conn:

@@ -285,7 +285,9 @@ def _keys(check: CheckSpec):
 def key_series(df: pd.DataFrame, key) -> pd.Series:
     """String key for a column or a composite key (values joined with '|')."""
     cols = [key] if isinstance(key, str) else list(key)
-    out = None
+    if not cols:
+        raise ValueError("a key needs at least one column")
+    out: Optional[pd.Series] = None
     for c in cols:
         # a key part is a column name, or an expression such as to_date(col("START_DT"), "%Y%m%d")
         v = df[c] if c in df.columns else evaluate(c, df)
@@ -298,6 +300,7 @@ def key_series(df: pd.DataFrame, key) -> pd.Series:
             s = v.dt.strftime("%Y-%m-%d").astype("string")
         s = s.fillna("<null>")  # no trimming: a padded key is a defect, not a match
         out = s if out is None else out + "|" + s
+    assert out is not None
     return out
 
 
