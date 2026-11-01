@@ -1,11 +1,11 @@
 # MapVerity CLI image: docker run --rm -v "$PWD:/work" ghcr.io/<owner>/mapverity validate spec.mapverity.yaml
-FROM python:3.12-slim AS build
+FROM python:3.15-slim AS build
 WORKDIR /src
 COPY pyproject.toml README.md LICENSE NOTICE ./
 COPY src ./src
 RUN pip install --no-cache-dir build && python -m build --wheel --outdir /dist
 
-FROM python:3.12-slim
+FROM python:3.15-slim
 LABEL org.opencontainers.image.title="MapVerity" \
       org.opencontainers.image.description="Field-level assurance for data pipelines" \
       org.opencontainers.image.licenses="Apache-2.0" \
