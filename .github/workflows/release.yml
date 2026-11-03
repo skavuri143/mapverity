@@ -30,7 +30,7 @@ jobs:
     permissions:
       id-token: write   # PyPI trusted publishing: no API token stored in GitHub
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: {name: dist, path: dist/}
       - uses: pypa/gh-action-pypi-publish@release/v1
 
@@ -41,7 +41,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: {name: dist, path: dist/}
       - name: SBOM
         uses: anchore/sbom-action@v0
